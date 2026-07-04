@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Model file (كبير — مش هنرفعه، هيتدرب تلقائي على Streamlit)
+models/churn_model.pkl
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
