@@ -1,7 +1,7 @@
 """
 dashboard/app.py
 ================
-الـ Dashboard الكامل — 3 شاشات في تبويبات مع تصميم Qystas Premium.
+الـ Dashboard الكامل — 3 شاشات مع تصميم Qystas Premium و Dark/Light Mode.
 
 تشغيل:
   cd pricing_engine
@@ -29,52 +29,103 @@ st.set_page_config(
     page_title="Qystas | محرك التسعير الذكي",
     page_icon="⚖️",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # ─────────────────────────────────────────────
-# حقن الـ CSS المخصص الخاص بـ Qystas
+# القائمة الجانبية (Sidebar) - إعدادات الثيم
 # ─────────────────────────────────────────────
-st.markdown("""
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap');
+with st.sidebar:
+    st.markdown("### ⚙️ إعدادات العرض")
+    dark_mode = st.toggle("🌙 تفعيل الوضع الليلي (Dark Mode)", value=False)
 
-  :root {
-    --navy:    #0B2545;
-    --navy2:   #133A6A;
-    --gold:    #C9A84C;
-    --gold2:   #E8C96A;
-    --slate:   #4A6FA5;
+# ─────────────────────────────────────────────
+# تحديد متغيرات الألوان بناءً على الثيم
+# ─────────────────────────────────────────────
+if dark_mode:
+    # ألوان الوضع الليلي
+    theme_colors = """
+    --bg:      #0B1121;
+    --bg2:     #1F2937;
+    --white:   #111827;
+    --text:    #F3F4F6;
+    --muted:   #9CA3AF;
+    --navy:    #1E3A8A;
+    --gold:    #EAB308;
+    --green:   #10B981;
+    --red:     #EF4444;
+    --amber:   #F59E0B;
+    """
+    chart_text_color = "#F3F4F6"
+    chart_grid_color = "#1F2937"
+else:
+    # ألوان وضع النهار
+    theme_colors = """
     --bg:      #F4F7F9;
     --bg2:     #E2EAF4;
     --white:   #FFFFFF;
     --text:    #1A2E4A;
     --muted:   #7A8FA6;
+    --navy:    #0B2545;
+    --gold:    #C9A84C;
     --green:   #1E8C5A;
     --red:     #C0392B;
     --amber:   #D68910;
-  }
+    """
+    chart_text_color = "#1A2E4A"
+    chart_grid_color = "#E2EAF4"
+
+# ─────────────────────────────────────────────
+# حقن الـ CSS المخصص الخاص بـ Qystas وتصحيح الـ Labels
+# ─────────────────────────────────────────────
+st.markdown(f"""
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap');
+
+  :root {{
+    {theme_colors}
+  }}
 
   /* Overrides for Streamlit App Background */
-  .stApp {
+  .stApp {{
       background-color: var(--bg);
       font-family: 'Cairo', 'Inter', sans-serif;
       color: var(--text);
-  }
+  }}
   
   /* Hide Streamlit Header */
-  header {visibility: hidden;}
+  header {{visibility: hidden;}}
+
+  /* ══════════════════════════════════════════════════
+     إصلاح مشكلة تباين الألوان (Labels & Markdown)
+  ══════════════════════════════════════════════════ */
+  div[data-testid="stWidgetLabel"] p, 
+  .stMarkdown p, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, 
+  .stText p, label p {{
+      color: var(--text) !important;
+      font-weight: 700 !important;
+  }}
+  
+  /* إصلاح ألوان نصوص التنبيهات (Success, Warning, etc) */
+  div[data-testid="stAlert"] {{
+      background-color: var(--white) !important;
+      border: 1px solid var(--bg2) !important;
+      color: var(--text) !important;
+  }}
+  div[data-testid="stAlert"] p {{
+      color: var(--text) !important;
+  }}
 
   /* Customizing Streamlit Tabs */
-  .stTabs [data-baseweb="tab-list"] {
+  .stTabs [data-baseweb="tab-list"] {{
       background-color: var(--white);
       padding: 8px;
       border-radius: 14px;
       border: 1px solid var(--bg2);
-      box-shadow: 0 2px 8px rgba(11,37,69,0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       gap: 8px;
-  }
-  .stTabs [data-baseweb="tab"] {
+  }}
+  .stTabs [data-baseweb="tab"] {{
       padding: 12px 24px;
       border-radius: 10px;
       font-family: 'Cairo', sans-serif;
@@ -84,15 +135,15 @@ st.markdown("""
       border: none;
       background: transparent;
       transition: all 0.2s ease;
-  }
-  .stTabs [aria-selected="true"] {
+  }}
+  .stTabs [aria-selected="true"] {{
       background-color: var(--navy) !important;
-      color: var(--gold) !important;
-      box-shadow: 0 4px 12px rgba(11,37,69,0.2) !important;
-  }
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+  }}
   
   /* Customizing Streamlit Inputs */
-  .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
+  .stNumberInput input, .stSelectbox div[data-baseweb="select"] {{
       background-color: var(--white) !important;
       border: 2px solid var(--bg2) !important;
       border-radius: 10px !important;
@@ -100,12 +151,12 @@ st.markdown("""
       font-weight: 600;
       color: var(--text) !important;
       transition: border-color 0.2s;
-  }
-  .stNumberInput input:focus { border-color: var(--gold) !important; }
+  }}
+  .stNumberInput input:focus {{ border-color: var(--gold) !important; }}
   
-  .stButton button {
+  .stButton button {{
       background-color: var(--navy) !important;
-      color: var(--white) !important;
+      color: #FFFFFF !important;
       border-radius: 12px !important;
       font-family: 'Cairo', sans-serif !important;
       font-weight: 700 !important;
@@ -113,19 +164,19 @@ st.markdown("""
       padding: 12px 24px !important;
       border: none !important;
       transition: all 0.3s !important;
-      box-shadow: 0 4px 10px rgba(11,37,69,0.2) !important;
-  }
-  .stButton button:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+  }}
+  .stButton button:hover {{
       background-color: var(--gold) !important;
       color: var(--navy) !important;
       transform: translateY(-2px) !important;
       box-shadow: 0 6px 16px rgba(201,168,76,0.4) !important;
-  }
+  }}
 
   /* ══════════════════════════════
      Qystas Custom HTML Elements
   ══════════════════════════════ */
-  .logo-showcase {
+  .logo-showcase {{
     background: var(--navy);
     padding: 32px 40px;
     display: flex;
@@ -135,70 +186,69 @@ st.markdown("""
     gap: 32px;
     border-radius: 0 0 24px 24px;
     margin-top: -60px;
-  }
-  .logo-main { display: flex; align-items: center; gap: 16px; }
-  .logo-icon { width: 56px; height: 56px; flex-shrink: 0; }
-  .logo-text-group { display: flex; flex-direction: column; gap: 2px; }
-  .logo-name { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 900; color: var(--gold); letter-spacing: -0.5px; line-height: 1; text-transform: uppercase;}
-  .logo-tagline { font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 600; color: var(--white); letter-spacing: 2px; text-transform: uppercase; line-height: 1; opacity: 0.8;}
+  }}
+  .logo-main {{ display: flex; align-items: center; gap: 16px; }}
+  .logo-icon {{ width: 56px; height: 56px; flex-shrink: 0; }}
+  .logo-text-group {{ display: flex; flex-direction: column; gap: 2px; }}
+  .logo-name {{ font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 900; color: var(--gold); letter-spacing: -0.5px; line-height: 1; text-transform: uppercase;}}
+  .logo-tagline {{ font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 600; color: #FFFFFF; letter-spacing: 2px; text-transform: uppercase; line-height: 1; opacity: 0.8;}}
 
   /* Ticker */
-  .ticker { background: var(--gold); padding: 10px 0; overflow: hidden; position: relative; margin-top: 16px; border-radius: 8px;}
-  .ticker-track { display: flex; gap: 0; animation: ticker 25s linear infinite; white-space: nowrap; }
-  .ticker-item { display: inline-flex; align-items: center; gap: 8px; padding: 0 32px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); }
-  .ticker-dot { width: 6px; height: 6px; background: var(--navy); border-radius: 50%; opacity: 0.5; }
-  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .ticker {{ background: var(--gold); padding: 10px 0; overflow: hidden; position: relative; margin-top: 16px; border-radius: 8px;}}
+  .ticker-track {{ display: flex; gap: 0; animation: ticker 25s linear infinite; white-space: nowrap; }}
+  .ticker-item {{ display: inline-flex; align-items: center; gap: 8px; padding: 0 32px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #000000; }}
+  .ticker-dot {{ width: 6px; height: 6px; background: #000000; border-radius: 50%; opacity: 0.5; }}
+  @keyframes ticker {{ 0% {{ transform: translateX(0); }} 100% {{ transform: translateX(-50%); }} }}
 
   /* Hero */
-  .hero {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #1A4A8A 100%);
+  .hero {{
+    background: linear-gradient(135deg, var(--navy) 0%, #1A4A8A 100%);
     padding: 48px 40px;
     position: relative;
     overflow: hidden;
     border-radius: 24px;
     margin-top: 16px;
     margin-bottom: 32px;
-    box-shadow: 0 8px 24px rgba(11,37,69,0.15);
-  }
-  .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; }
-  .hero-eyebrow-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
-  .hero-eyebrow span { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; }
-  .hero-headline { font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 900; color: var(--white); line-height: 1.2; margin-bottom: 16px; }
-  .hero-headline .accent { color: var(--gold); }
-  .hero-sub { font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.8); max-width: 650px; margin-bottom: 20px; line-height: 1.6;}
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }}
+  .hero-eyebrow {{ display: inline-flex; align-items: center; gap: 8px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; }}
+  .hero-eyebrow-dot {{ width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }}
+  @keyframes pulse {{ 0%, 100% {{ opacity: 1; transform: scale(1); }} 50% {{ opacity: 0.5; transform: scale(0.8); }} }}
+  .hero-eyebrow span {{ font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; }}
+  .hero-headline {{ font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 900; color: #FFFFFF; line-height: 1.2; margin-bottom: 16px; }}
+  .hero-headline .accent {{ color: var(--gold); }}
+  .hero-sub {{ font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.8); max-width: 650px; margin-bottom: 20px; line-height: 1.6;}}
 
   /* KPI Cards */
-  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px;}
-  .kpi-card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--bg2); box-shadow: 0 4px 12px rgba(11,37,69,0.05); display: flex; flex-direction: column; gap: 12px; transition: all 0.3s; border-top: 4px solid var(--navy); }
-  .kpi-card:hover { box-shadow: 0 8px 24px rgba(11,37,69,0.12); transform: translateY(-4px); border-top-color: var(--gold);}
-  .kpi-top { display: flex; align-items: center; justify-content: space-between; }
-  .kpi-label { font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: var(--muted); }
-  .kpi-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-  .kpi-badge.navy { background: rgba(11,37,69,0.07); } .kpi-badge.gold { background: rgba(201,168,76,0.15); } .kpi-badge.green { background: rgba(30,140,90,0.15); } .kpi-badge.red { background: rgba(192,57,43,0.15); }
-  .kpi-value { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 900; color: var(--text); line-height: 1; }
-  .kpi-delta { display: inline-flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 100px; width: fit-content;}
-  .kpi-delta.up { background: rgba(30,140,90,0.1); color: var(--green); }
-  .kpi-delta.down { background: rgba(192,57,43,0.1); color: var(--red); }
-  .kpi-delta.warn { background: rgba(214,137,16,0.15); color: var(--amber); }
+  .kpi-row {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px;}}
+  .kpi-card {{ background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--bg2); box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px; transition: all 0.3s; border-top: 4px solid var(--navy); }}
+  .kpi-card:hover {{ box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-top-color: var(--gold);}}
+  .kpi-top {{ display: flex; align-items: center; justify-content: space-between; }}
+  .kpi-label {{ font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: var(--muted); }}
+  .kpi-badge {{ width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }}
+  .kpi-badge.navy {{ background: rgba(11,37,69,0.07); }} .kpi-badge.gold {{ background: rgba(201,168,76,0.15); }} .kpi-badge.green {{ background: rgba(30,140,90,0.15); }} .kpi-badge.red {{ background: rgba(192,57,43,0.15); }}
+  .kpi-value {{ font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 900; color: var(--text); line-height: 1; }}
+  .kpi-delta {{ display: inline-flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 100px; width: fit-content;}}
+  .kpi-delta.up {{ background: rgba(30,140,90,0.1); color: var(--green); }}
+  .kpi-delta.down {{ background: rgba(192,57,43,0.1); color: var(--red); }}
+  .kpi-delta.warn {{ background: rgba(214,137,16,0.15); color: var(--amber); }}
 
   /* Rec Cards */
-  .rec-card { border-radius: 16px; padding: 24px; margin-bottom: 16px; border: 2px solid; display: flex; flex-direction: column; gap: 12px; background: var(--white); }
-  .rec-card.success { border-color: var(--green); box-shadow: 0 8px 20px rgba(30,140,90,0.1); }
-  .rec-card.warning { border-color: var(--amber); box-shadow: 0 8px 20px rgba(214,137,16,0.1); }
-  .rec-card.danger { border-color: var(--red); box-shadow: 0 8px 20px rgba(192,57,43,0.1); }
-  .rec-title { font-family: 'Cairo', sans-serif; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 8px;}
-  .rec-title.success { color: var(--green); } .rec-title.warning { color: var(--amber); } .rec-title.danger { color: var(--red); }
-  .rec-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--bg2); }
-  .rec-row:last-child { border-bottom: none; }
-  .rec-key { font-family: 'Cairo', sans-serif; font-size: 14px; color: var(--muted); font-weight: 700; }
-  .rec-val { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 900; color: var(--text); }
+  .rec-card {{ border-radius: 16px; padding: 24px; margin-bottom: 16px; border: 2px solid; display: flex; flex-direction: column; gap: 12px; background: var(--white); }}
+  .rec-card.success {{ border-color: var(--green); box-shadow: 0 8px 20px rgba(30,140,90,0.1); }}
+  .rec-card.warning {{ border-color: var(--amber); box-shadow: 0 8px 20px rgba(214,137,16,0.1); }}
+  .rec-card.danger {{ border-color: var(--red); box-shadow: 0 8px 20px rgba(192,57,43,0.1); }}
+  .rec-title {{ font-family: 'Cairo', sans-serif; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 8px;}}
+  .rec-title.success {{ color: var(--green); }} .rec-title.warning {{ color: var(--amber); }} .rec-title.danger {{ color: var(--red); }}
+  .rec-row {{ display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--bg2); }}
+  .rec-row:last-child {{ border-bottom: none; }}
+  .rec-key {{ font-family: 'Cairo', sans-serif; font-size: 14px; color: var(--muted); font-weight: 700; }}
+  .rec-val {{ font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 900; color: var(--text); }}
   
   /* Table Risk Pills */
-  .risk-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 800; font-family: 'Cairo', sans-serif; letter-spacing: 0.5px;}
-  .risk-pill.ok { background: rgba(30,140,90,0.15); color: var(--green); border: 1px solid rgba(30,140,90,0.3);}
-  .risk-pill.hi { background: rgba(192,57,43,0.15); color: var(--red); border: 1px solid rgba(192,57,43,0.3);}
-
+  .risk-pill {{ display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 800; font-family: 'Cairo', sans-serif; letter-spacing: 0.5px;}}
+  .risk-pill.ok {{ background: rgba(30,140,90,0.15); color: var(--green); border: 1px solid rgba(30,140,90,0.3);}}
+  .risk-pill.hi {{ background: rgba(192,57,43,0.15); color: var(--red); border: 1px solid rgba(192,57,43,0.3);}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -341,14 +391,14 @@ with tab1:
         paper_bgcolor="rgba(0,0,0,0)",
         xaxis_title="الدخل السنوي المتاح (جنيه)",
         yaxis_title="كثافة الاحتمال (Log-Normal Distribution)",
-        legend=dict(x=0.75, y=0.95, bgcolor="rgba(255,255,255,0.9)", bordercolor="#E2EAF4", borderwidth=1),
+        legend=dict(x=0.75, y=0.95, bgcolor="rgba(255,255,255,0.1)", bordercolor=chart_grid_color, borderwidth=1),
         height=450,
         margin=dict(t=30, b=30, l=10, r=10),
         hovermode="x unified",
-        font=dict(family="Cairo", color="#1A2E4A", size=14)
+        font=dict(family="Cairo", color=chart_text_color, size=14)
     )
-    fig.update_xaxes(tickformat=",", range=[0, 400_000], showgrid=True, gridcolor="#E2EAF4")
-    fig.update_yaxes(showgrid=True, gridcolor="#E2EAF4")
+    fig.update_xaxes(tickformat=",", range=[0, 400_000], showgrid=True, gridcolor=chart_grid_color)
+    fig.update_yaxes(showgrid=True, gridcolor=chart_grid_color)
     
     st.plotly_chart(fig, use_container_width=True)
     st.info("💡 **تحليل Qystas:** الإزاحة لليمين لا تعني تحسناً — الأرقام ارتفعت بفعل التضخم لكن القوة الشرائية الحقيقية انخفضت بشدة.")
@@ -401,7 +451,7 @@ with tab2:
             bar_width = min(seg['price_burden_pct'], 100)
             
             table_rows += f"""<tr style="border-bottom: 1px solid var(--bg2); transition: background 0.2s;">
-<td style="padding: 16px; font-weight:700; color: var(--navy); font-size:14px;">{seg['bracket']}</td>
+<td style="padding: 16px; font-weight:700; color: var(--text); font-size:14px;">{seg['bracket']}</td>
 <td style="padding: 16px; font-weight:800; color: var(--text); font-size:14px;">{seg['population_pct']:.2f}%</td>
 <td style="padding: 16px; font-family: 'Inter', sans-serif; color: var(--text); font-size:14px; font-weight:600;">{seg['monthly_disposable']:,.0f} ج</td>
 <td style="padding: 16px;">
@@ -415,9 +465,9 @@ with tab2:
 <td style="padding: 16px;"><span class="risk-pill {risk_class}">{risk_text}</span></td>
 </tr>"""
             
-        full_table = f"""<div style="overflow-x: auto; background: var(--white); border-radius: 16px; border: 1px solid var(--bg2); box-shadow: 0 4px 16px rgba(11,37,69,0.06); margin-top: 16px;">
+        full_table = f"""<div style="overflow-x: auto; background: var(--white); border-radius: 16px; border: 1px solid var(--bg2); box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-top: 16px;">
 <table class="seg-table" dir="rtl" style="width: 100%; min-width: 750px; margin: 0; border-collapse: collapse;">
-<thead style="background: var(--navy); color: var(--white);">
+<thead style="background: var(--navy); color: #FFFFFF;">
 <tr>
 <th style="padding: 18px 16px; text-align: right; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 800;">الفئة الدخلية السنوية</th>
 <th style="padding: 18px 16px; text-align: right; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 800;">% من السكان</th>
@@ -491,8 +541,10 @@ with tab3:
             color_discrete_sequence=["#4A6FA5", "#C9A84C"],
             text=[f"{product.current_weight_g}g", f"{weight_rec.optimal_weight_g}g"]
         )
-        fig_w.update_layout(height=280, margin=dict(t=20,b=20), showlegend=False, plot_bgcolor="rgba(0,0,0,0)", font=dict(family="Cairo", size=14))
+        fig_w.update_layout(height=280, margin=dict(t=20,b=20), showlegend=False, plot_bgcolor="rgba(0,0,0,0)", font=dict(family="Cairo", size=14, color=chart_text_color))
         fig_w.update_traces(textposition='auto', textfont_size=18, textfont_color="white", marker_line_width=0)
+        fig_w.update_xaxes(showgrid=False)
+        fig_w.update_yaxes(showgrid=True, gridcolor=chart_grid_color)
         st.plotly_chart(fig_w, use_container_width=True)
 
     with colB:
@@ -534,19 +586,21 @@ with tab3:
         fig_c.add_trace(go.Scatter(
             x=seg_df["bracket"], y=seg_df["churn_threshold_pct"],
             mode="lines+markers", name="عتبة المقاطعة (Threshold)",
-            line=dict(color="#0B2545", width=3, dash="dot"), marker=dict(size=8, color="#C9A84C")
+            line=dict(color=chart_text_color, width=2, dash="dot"), marker=dict(size=8, color="#C9A84C")
         ))
         fig_c.update_layout(
             height=280, margin=dict(t=20,b=20), plot_bgcolor="rgba(0,0,0,0)",
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            font=dict(family="Cairo", size=12)
+            font=dict(family="Cairo", size=12, color=chart_text_color)
         )
+        fig_c.update_xaxes(showgrid=False)
+        fig_c.update_yaxes(showgrid=True, gridcolor=chart_grid_color)
         st.plotly_chart(fig_c, use_container_width=True)
 
 # ─────────────────────────────────────────────
 # الفوتر المخصص (Qystas Footer)
 # ─────────────────────────────────────────────
-footer_html = """<div style="background:var(--navy); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-radius: 24px 24px 0 0; margin-top: 48px; box-shadow: 0 -4px 16px rgba(11,37,69,0.1);">
+footer_html = """<div style="background:var(--navy); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-radius: 24px 24px 0 0; margin-top: 48px; box-shadow: 0 -4px 16px rgba(0,0,0,0.2);">
 <div style="display:flex;align-items:center;gap:16px;">
 <svg width="28" height="28" viewBox="0 0 56 56" fill="none">
 <circle cx="28" cy="28" r="28" fill="#C9A84C"/>
@@ -556,13 +610,13 @@ footer_html = """<div style="background:var(--navy); padding: 24px 40px; display
 <path d="M34 27 Q31 31 38 31 Q45 31 42 27" fill="none" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
 <path d="M39 22 L39 17 M37 19 L39 17 L41 19" stroke="#0B2545" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<span style="font-family:'Cairo',sans-serif; font-size:14px; font-weight:600; color:rgba(255,255,255,0.6);">
+<span style="font-family:'Cairo',sans-serif; font-size:14px; font-weight:600; color:rgba(255,255,255,0.8);">
 © 2026 Qystas AI — نظام التسعير العادل. مبني على بيانات توزيع الدخل.
 </span>
 </div>
 <div style="display:flex; gap:10px;">
 <span style="padding: 6px 14px; border: 1px solid rgba(201,168,76,0.4); border-radius: 100px; font-family:'Inter',sans-serif; font-size:11px; font-weight:700; color:var(--gold); letter-spacing:1px;">XGBOOST POWERED</span>
-<span style="padding: 6px 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; font-family:'Inter',sans-serif; font-size:11px; font-weight:700; color:rgba(255,255,255,0.6); letter-spacing:1px;">EGYPT 2026</span>
+<span style="padding: 6px 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; font-family:'Inter',sans-serif; font-size:11px; font-weight:700; color:rgba(255,255,255,0.8); letter-spacing:1px;">EGYPT 2026</span>
 </div>
 </div>"""
 st.markdown(footer_html, unsafe_allow_html=True)
