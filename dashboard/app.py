@@ -244,27 +244,6 @@ html, body,
 .q-hero-stat-val.white { background:linear-gradient(135deg,#fff 60%,rgba(255,255,255,0.5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .q-hero-stat-label { font-size: 11px; font-weight: 500; color: var(--dim); margin-top: 6px; }
 
-/* BIG LOGO IN THE EMPTY SIDE */
-.q-hero-big-logo {
-  position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 20px;
-  pointer-events: none; z-index: 10;
-}
-.q-hero-big-mark {
-  width: 170px; height: 170px;
-  background: linear-gradient(135deg, var(--iris), var(--iris-2));
-  border-radius: 44px; display: flex; align-items: center; justify-content: center;
-  font-size: 90px; box-shadow: 0 0 80px var(--iris-glow);
-}
-.q-hero-big-name {
-  font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 700;
-  color: var(--snow); letter-spacing: -2px; line-height: 1;
-}
-.q-hero-big-name b { color: var(--iris-2); }
-@media (max-width: 1150px) {
-  .q-hero-big-logo { display: none; }
-}
-
 /* ═══════════════════════════════════════
    BODY
 ═══════════════════════════════════════ */
@@ -468,6 +447,133 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 }
 .q-footer-pill:hover { border-color:var(--iris); color:var(--iris-2); }
 .q-div { height:1px; background:var(--border); margin:28px 0; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET (≤ 1024px)
+═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  /* Nav */
+  .q-nav { padding: 0 24px; }
+  .chip-ghost, .chip-amber { display: none; }
+
+  /* Hero */
+  .q-hero { padding: 52px 24px 64px; }
+  .q-hero-h1 { letter-spacing: -1.5px; }
+  .q-hero-sub { font-size: 15px; }
+  .q-hero-stats { gap: 0; flex-wrap: wrap; }
+  .q-hero-stat { padding: 0 28px 0 0; margin-right: 28px; }
+  .q-hero-stat-val { font-size: 30px; }
+
+  /* Body */
+  .q-body { padding: 24px 24px 48px; gap: 20px; }
+
+  /* KPI grid → 2×2 */
+  .q-kpi-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 640px)
+═══════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* ── Nav ── */
+  .q-nav { padding: 0 16px; height: 56px; }
+  .q-nav-sub { display: none; }
+  .q-nav-name { font-size: 18px; }
+  .q-nav-mark { width: 32px; height: 32px; font-size: 16px; }
+  .chip-ghost, .chip-amber { display: none; }
+  .chip-live { padding: 4px 10px; font-size: 9px; }
+  .chip-iris { padding: 4px 10px; font-size: 9px; }
+
+  /* ── Ticker ── */
+  .q-ticker-wrap { height: 32px; }
+  .q-tick { font-size: 10px; padding: 0 18px; gap: 5px; }
+
+  /* ── Hero ── */
+  .q-hero { padding: 36px 16px 48px; }
+  .q-hero-eyebrow { padding: 5px 12px; margin-bottom: 18px; }
+  .q-hero-eyebrow-text { font-size: 9px; letter-spacing: 1px; }
+  .q-hero-h1 {
+    font-size: clamp(28px, 8vw, 42px);
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+  }
+  .q-hero-sub { font-size: 14px; line-height: 1.65; margin-bottom: 36px; max-width: 100%; }
+
+  /* Hero stats → 2×2 grid */
+  .q-hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 0; }
+  .q-hero-stat {
+    padding: 0; margin: 0;
+    border-right: none !important;
+  }
+  .q-hero-stat:nth-child(odd) { border-right: 1px solid var(--border) !important; padding-right: 16px; }
+  .q-hero-stat-val { font-size: 28px; }
+  .q-hero-stat-label { font-size: 10px; }
+
+  /* ── Body ── */
+  .q-body { padding: 16px 16px 40px; gap: 16px; }
+
+  /* ── KPI → single column ── */
+  .q-kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .q-kpi { padding: 16px 16px 14px; border-radius: var(--r-md); }
+  .q-kpi-val { font-size: 22px; }
+  .q-kpi-label { font-size: 9px; max-width: 90px; }
+  .q-kpi-icon { width: 28px; height: 28px; font-size: 13px; }
+  .q-kpi-delta { font-size: 9px; padding: 2px 7px; }
+
+  /* ── Section headers ── */
+  .q-section-title { font-size: 18px; }
+  .q-section-sub { font-size: 12px; }
+
+  /* ── Callout ── */
+  .q-callout { font-size: 12px; padding: 12px 14px; gap: 9px; }
+  .call-ico { font-size: 13px; }
+
+  /* ── Tabs ── */
+  .stTabs [data-baseweb="tab-list"] { width: 100% !important; }
+  .stTabs [data-baseweb="tab"] {
+    font-size: 11px !important;
+    padding: 8px 12px !important;
+    flex: 1 !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* ── Metrics ── */
+  [data-testid="stMetric"] { padding: 14px 16px !important; }
+  [data-testid="stMetricValue"] { font-size: 20px !important; }
+  [data-testid="stMetricLabel"] p { font-size: 9px !important; }
+
+  /* ── Charts: reduce height on mobile ── */
+  .js-plotly-plot { max-height: 280px; }
+
+  /* ── Footer ── */
+  .q-footer { padding: 20px 16px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .q-footer-pills { display: none; }
+  .q-footer-copy { font-size: 10px; }
+
+  /* ── Streamlit column fix on mobile ──
+     Streamlit columns stack on very small screens but
+     we nudge the gap so they don't feel cramped          */
+  [data-testid="stHorizontalBlock"] { gap: 8px !important; }
+
+  /* ── Number inputs full width ── */
+  .stNumberInput { width: 100% !important; }
+  .stSelectbox  { width: 100% !important; }
+
+  /* ── Button ── */
+  .stButton > button { font-size: 13px !important; padding: 11px 20px !important; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — VERY SMALL (≤ 380px)
+═══════════════════════════════════════ */
+@media (max-width: 380px) {
+  .q-kpi-grid { grid-template-columns: 1fr; }
+  .q-hero-stats { grid-template-columns: 1fr; gap: 16px; }
+  .q-hero-stat { border-right: none !important; padding-right: 0 !important; }
+  .q-hero-stat-val { font-size: 32px; }
+  .stTabs [data-baseweb="tab"] { font-size: 10px !important; padding: 7px 8px !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -589,12 +695,6 @@ st.markdown("""
       <div class="q-hero-stat-label">Model AUC Score</div>
     </div>
   </div>
-  
-  <div class="q-hero-big-logo">
-    <div class="q-hero-big-mark">⚖️</div>
-    <div class="q-hero-big-name">Qys<b>tas</b></div>
-  </div>
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -765,9 +865,9 @@ with tab2:
             current_price  = st.number_input("Current price (EGP)",         min_value=1.0,  max_value=500.0,  value=25.0, step=0.5)
             current_weight = st.number_input("Current weight (grams)",       min_value=10.0, max_value=5000.0, value=100.0, step=5.0)
             cost_per_gram  = st.number_input("Production cost / gram (EGP)", min_value=0.01, max_value=10.0,   value=0.18, step=0.01,
-                                             help="Raw materials + manufacturing + packaging")
+                                              help="Raw materials + manufacturing + packaging")
             new_price_in   = st.number_input("Proposed new price (EGP)",     min_value=1.0,  max_value=500.0,  value=30.0, step=0.5,
-                                             help="Used to predict churn if you raise price without changing weight")
+                                              help="Used to predict churn if you raise price without changing weight")
         with c2:
             st.markdown("**⚙️ Analysis parameters**")
             area_sel      = st.selectbox("Target region", ["Urban", "Rural"])
