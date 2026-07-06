@@ -963,9 +963,9 @@ with tab2:
         sdf_show["Status"] = sdf["affordable"].apply(lambda x: "✅ Affordable" if x else "🔴 Out of reach")
         sdf_show.columns   = ["Income Bracket", "Pop %", "Disposable/mo (EGP)", "Burden %", "Status"]
         # Typecasting protection to prevent crashes
-        sdf_show["Pop %"]              = pd.to_numeric(sdf_show["Pop %"], errors="coerce").round(2)
+        sdf_show["Pop %"]              = pd.to_numeric(sdf_show["Pop %"], errors="coerce").fillna(0).round(2)
         sdf_show["Disposable/mo (EGP)"]= pd.to_numeric(sdf_show["Disposable/mo (EGP)"], errors="coerce").fillna(0).round(0).astype(int)
-        sdf_show["Burden %"]           = pd.to_numeric(sdf_show["Burden %"], errors="coerce").round(1)
+        sdf_show["Burden %"]           = pd.to_numeric(sdf_show["Burden %"], errors="coerce").fillna(0).round(1)
         st.dataframe(sdf_show, use_container_width=True, hide_index=True, height=340)
 
 # ═══════════════════════════════════════════════
@@ -1068,10 +1068,18 @@ with tab3:
 
     # ── 3 simple charts for factory owners ──
     sdf2 = pd.DataFrame(c_pred.segments_detail)
-    
-    # TYPE ERROR FIX: Force string cast to safely use string methods and len() on dataframe columns
-    brackets  = [str(b).replace(",","").replace(" ","") for b in sdf2["bracket"]]
-    b_short   = [str(b) if len(str(b)) <= 12 else str(b)[:10]+"…" for b in sdf2["bracket"]]
+
+    # TYPE ERROR FIX: Clean numerical coercion before any loops or plots to guarantee type safety
+    sdf2["bracket"] = sdf2["bracket"].astype(str)
+    sdf2["price_burden_pct"] = pd.to_numeric(sdf2["price_burden_pct"], errors="coerce").fillna(0)
+    sdf2["ml_churn_prob"] = pd.to_numeric(sdf2["ml_churn_prob"], errors="coerce").fillna(0)
+    sdf2["population_pct"] = pd.to_numeric(sdf2["population_pct"], errors="coerce").fillna(0)
+    sdf2["monthly_disposable"] = pd.to_numeric(sdf2["monthly_disposable"], errors="coerce").fillna(0)
+    sdf2["churn_threshold_pct"] = pd.to_numeric(sdf2["churn_threshold_pct"], errors="coerce").fillna(0)
+    sdf2["at_risk"] = sdf2["at_risk"].fillna(False).astype(bool)
+
+    brackets  = [b.replace(",","").replace(" ","") for b in sdf2["bracket"]]
+    b_short   = [b if len(b) <= 12 else b[:10]+"…" for b in sdf2["bracket"]]
 
     ch1, ch2, ch3 = st.columns(3, gap="small")
 
@@ -1082,7 +1090,7 @@ with tab3:
             unsafe_allow_html=True,
         )
         
-        burdens = [float(x) for x in sdf2["price_burden_pct"]] # Safe conversion
+        burdens = sdf2["price_burden_pct"].tolist()
         
         fig1 = go.Figure(go.Bar(
             x=b_short,
@@ -1118,7 +1126,7 @@ with tab3:
             unsafe_allow_html=True,
         )
         
-        ml_probs = [float(v) * 100 for v in sdf2["ml_churn_prob"]] # Safe conversion
+        ml_probs = (sdf2["ml_churn_prob"] * 100).tolist()
         bar_colors = []
         for p in ml_probs:
             if p >= 50:
@@ -1154,14 +1162,13 @@ with tab3:
             unsafe_allow_html=True,
         )
         
-        # TYPE ERROR FIX: Remove *100, population_pct is already computed as percentage in optimizer.py
-        pop_vals = [float(v) for v in sdf2["population_pct"]] 
+        pop_vals = sdf2["population_pct"].tolist()
         pie_colors = ["#FF4757" if r else "#7C3AED" for r in sdf2["at_risk"]]
         
         fig3 = go.Figure(go.Pie(
             labels=b_short,
             values=pop_vals,
-            marker=dict(colors=pie_colors, line=dict(color="#060912", width=2)), # FIXED line color assignment
+            marker=dict(colors=pie_colors, line=dict(color="#060912", width=2)),
             textinfo="percent",
             textfont=dict(family="Inter", size=11, color="#F8FAFC"),
             hovertemplate="<b>%{label}</b><br>%{value:.2f}% من السوق<extra></extra>",
@@ -1181,17 +1188,20 @@ with tab3:
         "bracket","population_pct","monthly_disposable",
         "price_burden_pct","churn_threshold_pct","at_risk","ml_churn_prob",
     ]].copy()
+    
     sdf2_show.columns = [
         "Bracket","Pop %","Disposable/mo (EGP)",
         "Burden %","Threshold %","At Risk","ML Prob",
     ]
-    # Typecasting protection to prevent DataFrame crashes with generic exceptions
-    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🔴 Yes" if bool(x) else "🟢 No")
-    sdf2_show["ML Prob"]             = pd.to_numeric(sdf2_show["ML Prob"], errors="coerce").apply(lambda x: f"{x:.0%}")
-    sdf2_show["Disposable/mo (EGP)"] = pd.to_numeric(sdf2_show["Disposable/mo (EGP)"], errors="coerce").fillna(0).round(0).astype(int)
-    sdf2_show["Pop %"]               = pd.to_numeric(sdf2_show["Pop %"], errors="coerce").round(2)
-    sdf2_show["Burden %"]            = pd.to_numeric(sdf2_show["Burden %"], errors="coerce").round(1)
-    sdf2_show["Threshold %"]         = pd.to_numeric(sdf2_show["Threshold %"], errors="coerce").round(1)
+    
+    # Fully vectorized operations to format the dataframe cleanly without crashing
+    sdf2_show["At Risk"]             = sdf2_show["At Risk"].map({True: "🔴 Yes", False: "🟢 No"})
+    sdf2_show["ML Prob"]             = (sdf2_show["ML Prob"] * 100).round(0).astype(int).astype(str) + "%"
+    sdf2_show["Disposable/mo (EGP)"] = sdf2_show["Disposable/mo (EGP)"].round(0).astype(int)
+    sdf2_show["Pop %"]               = sdf2_show["Pop %"].round(2)
+    sdf2_show["Burden %"]            = sdf2_show["Burden %"].round(1)
+    sdf2_show["Threshold %"]         = sdf2_show["Threshold %"].round(1)
+    
     st.dataframe(sdf2_show, use_container_width=True, hide_index=True, height=340)
 
 st.markdown('</div>', unsafe_allow_html=True)
