@@ -244,6 +244,27 @@ html, body,
 .q-hero-stat-val.white { background:linear-gradient(135deg,#fff 60%,rgba(255,255,255,0.5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .q-hero-stat-label { font-size: 11px; font-weight: 500; color: var(--dim); margin-top: 6px; }
 
+/* BIG LOGO IN THE EMPTY SIDE */
+.q-hero-big-logo {
+  position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  pointer-events: none; z-index: 10;
+}
+.q-hero-big-mark {
+  width: 170px; height: 170px;
+  background: linear-gradient(135deg, var(--iris), var(--iris-2));
+  border-radius: 44px; display: flex; align-items: center; justify-content: center;
+  font-size: 90px; box-shadow: 0 0 80px var(--iris-glow);
+}
+.q-hero-big-name {
+  font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 700;
+  color: var(--snow); letter-spacing: -2px; line-height: 1;
+}
+.q-hero-big-name b { color: var(--iris-2); }
+@media (max-width: 1150px) {
+  .q-hero-big-logo { display: none; }
+}
+
 /* ═══════════════════════════════════════
    BODY
 ═══════════════════════════════════════ */
@@ -959,13 +980,14 @@ with tab2:
         st.plotly_chart(fig_aff, use_container_width=True)
 
         # ── DATAFRAME — plain, no custom CSS on it (FIXED TYPE ERROR SAFETY) ──
-        sdf_show = sdf[["bracket","population_pct","monthly_disposable","price_burden_pct"]].copy()
-        sdf_show["Status"] = sdf["affordable"].apply(lambda x: "✅ Affordable" if x else "🔴 Out of reach")
-        sdf_show.columns   = ["Income Bracket", "Pop %", "Disposable/mo (EGP)", "Burden %", "Status"]
-        # Typecasting protection to prevent crashes
-        sdf_show["Pop %"]              = pd.to_numeric(sdf_show["Pop %"], errors="coerce").fillna(0).round(2)
-        sdf_show["Disposable/mo (EGP)"]= pd.to_numeric(sdf_show["Disposable/mo (EGP)"], errors="coerce").fillna(0).round(0).astype(int)
-        sdf_show["Burden %"]           = pd.to_numeric(sdf_show["Burden %"], errors="coerce").fillna(0).round(1)
+        # Pure Python creation to guarantee PyArrow JSON Serialization success
+        sdf_show = pd.DataFrame({
+            "Income Bracket":      [str(x) for x in sdf["bracket"]],
+            "Pop %":               [round(float(x), 2) for x in sdf["population_pct"]],
+            "Disposable/mo (EGP)": [int(float(x)) for x in sdf["monthly_disposable"]],
+            "Burden %":            [round(float(x), 1) for x in sdf["price_burden_pct"]],
+            "Status":              ["✅ Affordable" if bool(x) else "🔴 Out of reach" for x in sdf["affordable"]]
+        })
         st.dataframe(sdf_show, use_container_width=True, hide_index=True, height=340)
 
 # ═══════════════════════════════════════════════
@@ -1069,17 +1091,13 @@ with tab3:
     # ── 3 simple charts for factory owners ──
     sdf2 = pd.DataFrame(c_pred.segments_detail)
 
-    # TYPE ERROR FIX: Clean numerical coercion before any loops or plots to guarantee type safety
-    sdf2["bracket"] = sdf2["bracket"].astype(str)
-    sdf2["price_burden_pct"] = pd.to_numeric(sdf2["price_burden_pct"], errors="coerce").fillna(0)
-    sdf2["ml_churn_prob"] = pd.to_numeric(sdf2["ml_churn_prob"], errors="coerce").fillna(0)
-    sdf2["population_pct"] = pd.to_numeric(sdf2["population_pct"], errors="coerce").fillna(0)
-    sdf2["monthly_disposable"] = pd.to_numeric(sdf2["monthly_disposable"], errors="coerce").fillna(0)
-    sdf2["churn_threshold_pct"] = pd.to_numeric(sdf2["churn_threshold_pct"], errors="coerce").fillna(0)
-    sdf2["at_risk"] = sdf2["at_risk"].fillna(False).astype(bool)
-
-    brackets  = [b.replace(",","").replace(" ","") for b in sdf2["bracket"]]
-    b_short   = [b if len(b) <= 12 else b[:10]+"…" for b in sdf2["bracket"]]
+    # 100% Pure Python extraction to guarantee ZERO Plotly/NumPy serialization crashes
+    b_raw     = [str(x).replace(",", "").replace(" ", "") for x in sdf2["bracket"]]
+    b_short   = [x if len(x) <= 12 else x[:10]+"…" for x in b_raw]
+    burdens   = [float(x) for x in sdf2["price_burden_pct"]]
+    ml_probs  = [float(x) * 100 for x in sdf2["ml_churn_prob"]]
+    pop_vals  = [float(x) for x in sdf2["population_pct"]]
+    at_risk   = [bool(x) for x in sdf2["at_risk"]]
 
     ch1, ch2, ch3 = st.columns(3, gap="small")
 
@@ -1090,16 +1108,14 @@ with tab3:
             unsafe_allow_html=True,
         )
         
-        burdens = sdf2["price_burden_pct"].tolist()
-        
         fig1 = go.Figure(go.Bar(
             x=b_short,
             y=burdens,
             marker=dict(
-                color=["#FF4757" if r else "#06D6A0" for r in sdf2["at_risk"]],
+                color=["#FF4757" if r else "#06D6A0" for r in at_risk],
                 opacity=0.88, line=dict(width=0),
             ),
-            text=["🔴 غالي" if r else "✅ مناسب" for r in sdf2["at_risk"]],
+            text=["🔴 غالي" if r else "✅ مناسب" for r in at_risk],
             textposition="outside",
             textfont=dict(family="Inter", size=11, color="#F8FAFC"),
             hovertemplate="<b>%{x}</b><br>عبء السعر: %{y:.1f}%<extra></extra>",
@@ -1126,7 +1142,6 @@ with tab3:
             unsafe_allow_html=True,
         )
         
-        ml_probs = (sdf2["ml_churn_prob"] * 100).tolist()
         bar_colors = []
         for p in ml_probs:
             if p >= 50:
@@ -1162,8 +1177,7 @@ with tab3:
             unsafe_allow_html=True,
         )
         
-        pop_vals = sdf2["population_pct"].tolist()
-        pie_colors = ["#FF4757" if r else "#7C3AED" for r in sdf2["at_risk"]]
+        pie_colors = ["#FF4757" if r else "#7C3AED" for r in at_risk]
         
         fig3 = go.Figure(go.Pie(
             labels=b_short,
@@ -1184,23 +1198,17 @@ with tab3:
 
     # ── DATAFRAME — clean, no CSS interference (FIXED TYPE ERROR SAFETY) ──
     st.markdown("**Segment detail breakdown**")
-    sdf2_show = sdf2[[
-        "bracket","population_pct","monthly_disposable",
-        "price_burden_pct","churn_threshold_pct","at_risk","ml_churn_prob",
-    ]].copy()
     
-    sdf2_show.columns = [
-        "Bracket","Pop %","Disposable/mo (EGP)",
-        "Burden %","Threshold %","At Risk","ML Prob",
-    ]
-    
-    # Fully vectorized operations to format the dataframe cleanly without crashing
-    sdf2_show["At Risk"]             = sdf2_show["At Risk"].map({True: "🔴 Yes", False: "🟢 No"})
-    sdf2_show["ML Prob"]             = (sdf2_show["ML Prob"] * 100).round(0).astype(int).astype(str) + "%"
-    sdf2_show["Disposable/mo (EGP)"] = sdf2_show["Disposable/mo (EGP)"].round(0).astype(int)
-    sdf2_show["Pop %"]               = sdf2_show["Pop %"].round(2)
-    sdf2_show["Burden %"]            = sdf2_show["Burden %"].round(1)
-    sdf2_show["Threshold %"]         = sdf2_show["Threshold %"].round(1)
+    # Pure Python creation to guarantee PyArrow JSON Serialization success
+    sdf2_show = pd.DataFrame({
+        "Bracket":             [str(x) for x in sdf2["bracket"]],
+        "Pop %":               [round(float(x), 2) for x in sdf2["population_pct"]],
+        "Disposable/mo (EGP)": [int(float(x)) for x in sdf2["monthly_disposable"]],
+        "Burden %":            [round(float(x), 1) for x in sdf2["price_burden_pct"]],
+        "Threshold %":         [round(float(x), 1) for x in sdf2["churn_threshold_pct"]],
+        "At Risk":             ["🔴 Yes" if bool(x) else "🟢 No" for x in sdf2["at_risk"]],
+        "ML Prob":             [f"{float(x)*100:.0f}%" for x in sdf2["ml_churn_prob"]],
+    })
     
     st.dataframe(sdf2_show, use_container_width=True, hide_index=True, height=340)
 
