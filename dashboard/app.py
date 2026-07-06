@@ -553,7 +553,7 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 
   /* ── Streamlit column fix on mobile ──
      Streamlit columns stack on very small screens but
-     we nudge the gap so they don't feel cramped          */
+     we nudge the gap so they don't feel cramped         */
   [data-testid="stHorizontalBlock"] { gap: 8px !important; }
 
   /* ── Number inputs full width ── */
@@ -884,9 +884,9 @@ with tab2:
             current_price  = st.number_input("Current price (EGP)",         min_value=1.0,  max_value=500.0,  value=25.0, step=0.5)
             current_weight = st.number_input("Current weight (grams)",       min_value=10.0, max_value=5000.0, value=100.0, step=5.0)
             cost_per_gram  = st.number_input("Production cost / gram (EGP)", min_value=0.01, max_value=10.0,   value=0.18, step=0.01,
-                                              help="Raw materials + manufacturing + packaging")
+                                             help="Raw materials + manufacturing + packaging")
             new_price_in   = st.number_input("Proposed new price (EGP)",     min_value=1.0,  max_value=500.0,  value=30.0, step=0.5,
-                                              help="Used to predict churn if you raise price without changing weight")
+                                             help="Used to predict churn if you raise price without changing weight")
         with c2:
             st.markdown("**⚙️ Analysis parameters**")
             area_sel      = st.selectbox("Target region", ["Urban", "Rural"])
@@ -958,13 +958,14 @@ with tab2:
         ))
         st.plotly_chart(fig_aff, use_container_width=True)
 
-        # ── DATAFRAME — plain, no custom CSS on it ──
+        # ── DATAFRAME — plain, no custom CSS on it (FIXED TYPE ERROR SAFETY) ──
         sdf_show = sdf[["bracket","population_pct","monthly_disposable","price_burden_pct"]].copy()
         sdf_show["Status"] = sdf["affordable"].apply(lambda x: "✅ Affordable" if x else "🔴 Out of reach")
         sdf_show.columns   = ["Income Bracket", "Pop %", "Disposable/mo (EGP)", "Burden %", "Status"]
-        sdf_show["Pop %"]              = sdf_show["Pop %"].round(2)
-        sdf_show["Disposable/mo (EGP)"]= sdf_show["Disposable/mo (EGP)"].round(0).astype(int)
-        sdf_show["Burden %"]           = sdf_show["Burden %"].round(1)
+        # Typecasting protection to prevent crashes
+        sdf_show["Pop %"]              = pd.to_numeric(sdf_show["Pop %"], errors="coerce").round(2)
+        sdf_show["Disposable/mo (EGP)"]= pd.to_numeric(sdf_show["Disposable/mo (EGP)"], errors="coerce").fillna(0).round(0).astype(int)
+        sdf_show["Burden %"]           = pd.to_numeric(sdf_show["Burden %"], errors="coerce").round(1)
         st.dataframe(sdf_show, use_container_width=True, hide_index=True, height=340)
 
 # ═══════════════════════════════════════════════
@@ -1067,8 +1068,10 @@ with tab3:
 
     # ── 3 simple charts for factory owners ──
     sdf2 = pd.DataFrame(c_pred.segments_detail)
-    brackets  = [b.replace(",","").replace(" ","") for b in sdf2["bracket"]]
-    b_short   = [b if len(b) <= 12 else b[:10]+"…" for b in sdf2["bracket"]]
+    
+    # TYPE ERROR FIX: Force string cast to safely use string methods and len() on dataframe columns
+    brackets  = [str(b).replace(",","").replace(" ","") for b in sdf2["bracket"]]
+    b_short   = [str(b) if len(str(b)) <= 12 else str(b)[:10]+"…" for b in sdf2["bracket"]]
 
     ch1, ch2, ch3 = st.columns(3, gap="small")
 
@@ -1078,9 +1081,12 @@ with tab3:
             '<div class="q-section-label" style="text-align:center;margin-bottom:8px">هل يقدر يشتري؟</div>',
             unsafe_allow_html=True,
         )
+        
+        burdens = [float(x) for x in sdf2["price_burden_pct"]] # Safe conversion
+        
         fig1 = go.Figure(go.Bar(
             x=b_short,
-            y=sdf2["price_burden_pct"],
+            y=burdens,
             marker=dict(
                 color=["#FF4757" if r else "#06D6A0" for r in sdf2["at_risk"]],
                 opacity=0.88, line=dict(width=0),
@@ -1111,7 +1117,8 @@ with tab3:
             '<div class="q-section-label" style="text-align:center;margin-bottom:8px">احتمال المقاطعة</div>',
             unsafe_allow_html=True,
         )
-        ml_probs = [v * 100 for v in sdf2["ml_churn_prob"]]
+        
+        ml_probs = [float(v) * 100 for v in sdf2["ml_churn_prob"]] # Safe conversion
         bar_colors = []
         for p in ml_probs:
             if p >= 50:
@@ -1146,12 +1153,15 @@ with tab3:
             '<div class="q-section-label" style="text-align:center;margin-bottom:8px">حجم كل فئة في السوق</div>',
             unsafe_allow_html=True,
         )
-        pop_vals = [round(v * 100, 2) for v in sdf2["population_pct"]]
+        
+        # TYPE ERROR FIX: Remove *100, population_pct is already computed as percentage in optimizer.py
+        pop_vals = [float(v) for v in sdf2["population_pct"]] 
         pie_colors = ["#FF4757" if r else "#7C3AED" for r in sdf2["at_risk"]]
+        
         fig3 = go.Figure(go.Pie(
             labels=b_short,
             values=pop_vals,
-            marker=dict(colors=pie_colors, line=dict(color=["#060912"]*len(b_short), width=2)),
+            marker=dict(colors=pie_colors, line=dict(color="#060912", width=2)), # FIXED line color assignment
             textinfo="percent",
             textfont=dict(family="Inter", size=11, color="#F8FAFC"),
             hovertemplate="<b>%{label}</b><br>%{value:.2f}% من السوق<extra></extra>",
@@ -1165,7 +1175,7 @@ with tab3:
         ))
         st.plotly_chart(fig3, use_container_width=True)
 
-    # ── DATAFRAME — clean, no CSS interference ──
+    # ── DATAFRAME — clean, no CSS interference (FIXED TYPE ERROR SAFETY) ──
     st.markdown("**Segment detail breakdown**")
     sdf2_show = sdf2[[
         "bracket","population_pct","monthly_disposable",
@@ -1175,12 +1185,13 @@ with tab3:
         "Bracket","Pop %","Disposable/mo (EGP)",
         "Burden %","Threshold %","At Risk","ML Prob",
     ]
-    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🔴 Yes" if x else "🟢 No")
-    sdf2_show["ML Prob"]             = sdf2_show["ML Prob"].apply(lambda x: f"{x:.0%}")
-    sdf2_show["Disposable/mo (EGP)"] = sdf2_show["Disposable/mo (EGP)"].round(0).astype(int)
-    sdf2_show["Pop %"]               = sdf2_show["Pop %"].round(2)
-    sdf2_show["Burden %"]            = sdf2_show["Burden %"].round(1)
-    sdf2_show["Threshold %"]         = sdf2_show["Threshold %"].round(1)
+    # Typecasting protection to prevent DataFrame crashes with generic exceptions
+    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🔴 Yes" if bool(x) else "🟢 No")
+    sdf2_show["ML Prob"]             = pd.to_numeric(sdf2_show["ML Prob"], errors="coerce").apply(lambda x: f"{x:.0%}")
+    sdf2_show["Disposable/mo (EGP)"] = pd.to_numeric(sdf2_show["Disposable/mo (EGP)"], errors="coerce").fillna(0).round(0).astype(int)
+    sdf2_show["Pop %"]               = pd.to_numeric(sdf2_show["Pop %"], errors="coerce").round(2)
+    sdf2_show["Burden %"]            = pd.to_numeric(sdf2_show["Burden %"], errors="coerce").round(1)
+    sdf2_show["Threshold %"]         = pd.to_numeric(sdf2_show["Threshold %"], errors="coerce").round(1)
     st.dataframe(sdf2_show, use_container_width=True, hide_index=True, height=340)
 
 st.markdown('</div>', unsafe_allow_html=True)
