@@ -468,133 +468,6 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 }
 .q-footer-pill:hover { border-color:var(--iris); color:var(--iris-2); }
 .q-div { height:1px; background:var(--border); margin:28px 0; }
-
-/* ═══════════════════════════════════════
-   RESPONSIVE — TABLET (≤ 1024px)
-═══════════════════════════════════════ */
-@media (max-width: 1024px) {
-  /* Nav */
-  .q-nav { padding: 0 24px; }
-  .chip-ghost, .chip-amber { display: none; }
-
-  /* Hero */
-  .q-hero { padding: 52px 24px 64px; }
-  .q-hero-h1 { letter-spacing: -1.5px; }
-  .q-hero-sub { font-size: 15px; }
-  .q-hero-stats { gap: 0; flex-wrap: wrap; }
-  .q-hero-stat { padding: 0 28px 0 0; margin-right: 28px; }
-  .q-hero-stat-val { font-size: 30px; }
-
-  /* Body */
-  .q-body { padding: 24px 24px 48px; gap: 20px; }
-
-  /* KPI grid → 2×2 */
-  .q-kpi-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
-}
-
-/* ═══════════════════════════════════════
-   RESPONSIVE — MOBILE (≤ 640px)
-═══════════════════════════════════════ */
-@media (max-width: 640px) {
-  /* ── Nav ── */
-  .q-nav { padding: 0 16px; height: 56px; }
-  .q-nav-sub { display: none; }
-  .q-nav-name { font-size: 18px; }
-  .q-nav-mark { width: 32px; height: 32px; font-size: 16px; }
-  .chip-ghost, .chip-amber { display: none; }
-  .chip-live { padding: 4px 10px; font-size: 9px; }
-  .chip-iris { padding: 4px 10px; font-size: 9px; }
-
-  /* ── Ticker ── */
-  .q-ticker-wrap { height: 32px; }
-  .q-tick { font-size: 10px; padding: 0 18px; gap: 5px; }
-
-  /* ── Hero ── */
-  .q-hero { padding: 36px 16px 48px; }
-  .q-hero-eyebrow { padding: 5px 12px; margin-bottom: 18px; }
-  .q-hero-eyebrow-text { font-size: 9px; letter-spacing: 1px; }
-  .q-hero-h1 {
-    font-size: clamp(28px, 8vw, 42px);
-    letter-spacing: -1px;
-    margin-bottom: 14px;
-  }
-  .q-hero-sub { font-size: 14px; line-height: 1.65; margin-bottom: 36px; max-width: 100%; }
-
-  /* Hero stats → 2×2 grid */
-  .q-hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 0; }
-  .q-hero-stat {
-    padding: 0; margin: 0;
-    border-right: none !important;
-  }
-  .q-hero-stat:nth-child(odd) { border-right: 1px solid var(--border) !important; padding-right: 16px; }
-  .q-hero-stat-val { font-size: 28px; }
-  .q-hero-stat-label { font-size: 10px; }
-
-  /* ── Body ── */
-  .q-body { padding: 16px 16px 40px; gap: 16px; }
-
-  /* ── KPI → single column ── */
-  .q-kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .q-kpi { padding: 16px 16px 14px; border-radius: var(--r-md); }
-  .q-kpi-val { font-size: 22px; }
-  .q-kpi-label { font-size: 9px; max-width: 90px; }
-  .q-kpi-icon { width: 28px; height: 28px; font-size: 13px; }
-  .q-kpi-delta { font-size: 9px; padding: 2px 7px; }
-
-  /* ── Section headers ── */
-  .q-section-title { font-size: 18px; }
-  .q-section-sub { font-size: 12px; }
-
-  /* ── Callout ── */
-  .q-callout { font-size: 12px; padding: 12px 14px; gap: 9px; }
-  .call-ico { font-size: 13px; }
-
-  /* ── Tabs ── */
-  .stTabs [data-baseweb="tab-list"] { width: 100% !important; }
-  .stTabs [data-baseweb="tab"] {
-    font-size: 11px !important;
-    padding: 8px 12px !important;
-    flex: 1 !important;
-    justify-content: center !important;
-    text-align: center !important;
-  }
-
-  /* ── Metrics ── */
-  [data-testid="stMetric"] { padding: 14px 16px !important; }
-  [data-testid="stMetricValue"] { font-size: 20px !important; }
-  [data-testid="stMetricLabel"] p { font-size: 9px !important; }
-
-  /* ── Charts: reduce height on mobile ── */
-  .js-plotly-plot { max-height: 280px; }
-
-  /* ── Footer ── */
-  .q-footer { padding: 20px 16px; flex-direction: column; align-items: flex-start; gap: 12px; }
-  .q-footer-pills { display: none; }
-  .q-footer-copy { font-size: 10px; }
-
-  /* ── Streamlit column fix on mobile ──
-     Streamlit columns stack on very small screens but
-     we nudge the gap so they don't feel cramped         */
-  [data-testid="stHorizontalBlock"] { gap: 8px !important; }
-
-  /* ── Number inputs full width ── */
-  .stNumberInput { width: 100% !important; }
-  .stSelectbox  { width: 100% !important; }
-
-  /* ── Button ── */
-  .stButton > button { font-size: 13px !important; padding: 11px 20px !important; }
-}
-
-/* ═══════════════════════════════════════
-   RESPONSIVE — VERY SMALL (≤ 380px)
-═══════════════════════════════════════ */
-@media (max-width: 380px) {
-  .q-kpi-grid { grid-template-columns: 1fr; }
-  .q-hero-stats { grid-template-columns: 1fr; gap: 16px; }
-  .q-hero-stat { border-right: none !important; padding-right: 0 !important; }
-  .q-hero-stat-val { font-size: 32px; }
-  .stTabs [data-baseweb="tab"] { font-size: 10px !important; padding: 7px 8px !important; }
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -681,60 +554,47 @@ st.markdown(f"""
 # HERO
 # ─────────────────────────────────────────────────────────
 st.markdown("""
-<style>
-.q-hero-logo-block{display:flex;flex-direction:column;align-items:center;gap:14px;flex-shrink:0;}
-.q-hero-logo-mark{width:130px;height:130px;background:linear-gradient(135deg,#7C3AED,#9D5FF5);border-radius:32px;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 60px rgba(124,58,237,0.45),0 0 120px rgba(124,58,237,0.15);animation:logo-float 4s ease-in-out infinite;}
-@keyframes logo-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.q-hero-logo-name{font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:#F8FAFC;letter-spacing:-1.5px;line-height:1;}
-.q-hero-logo-name b{color:#9D5FF5;}
-.q-hero-logo-tag{font-size:11px;font-weight:600;color:#4A5568;letter-spacing:2px;text-transform:uppercase;}
-@media(max-width:768px){.q-hero-logo-block{display:none;}}
-</style>
-
 <div class="q-hero">
   <div class="q-hero-bg">
     <div class="q-hero-grid"></div>
     <div class="q-hero-orb-1"></div>
     <div class="q-hero-orb-2"></div>
   </div>
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:32px;position:relative;">
-    <div style="flex:1;min-width:0;">
-      <div class="q-hero-eyebrow">
-        <span class="q-hero-eyebrow-dot"></span>
-        <span class="q-hero-eyebrow-text">Egyptian Income Distribution · 2020 – 2026</span>
-      </div>
-      <div class="q-hero-h1">
-        Price smarter.<br><span class="q-hero-h1-accent">Win the market.</span>
-      </div>
-      <div class="q-hero-sub">
-        AI-powered pricing intelligence for Egyptian manufacturers — grounded in real income
-        distribution data so every decision reflects how your customers actually live today.
-      </div>
-      <div class="q-hero-stats">
-        <div class="q-hero-stat">
-          <div class="q-hero-stat-val iris">2.47×</div>
-          <div class="q-hero-stat-label">Cumulative Urban Inflation</div>
-        </div>
-        <div class="q-hero-stat">
-          <div class="q-hero-stat-val jade">40.5%</div>
-          <div class="q-hero-stat-label">Real Purchasing Power</div>
-        </div>
-        <div class="q-hero-stat">
-          <div class="q-hero-stat-val white">24K</div>
-          <div class="q-hero-stat-label">Training Scenarios</div>
-        </div>
-        <div class="q-hero-stat">
-          <div class="q-hero-stat-val iris">0.74</div>
-          <div class="q-hero-stat-label">Model AUC Score</div>
-        </div>
-      </div>
+  <div class="q-hero-eyebrow">
+    <span class="q-hero-eyebrow-dot"></span>
+    <span class="q-hero-eyebrow-text">Egyptian Income Distribution · 2020 – 2026</span>
+  </div>
+  <div class="q-hero-h1">
+    Price smarter.<br><span class="q-hero-h1-accent">Win the market.</span>
+  </div>
+  <div class="q-hero-sub">
+    AI-powered pricing intelligence for Egyptian manufacturers — grounded in real income
+    distribution data so every decision reflects how your customers actually live today.
+  </div>
+  <div class="q-hero-stats">
+    <div class="q-hero-stat">
+      <div class="q-hero-stat-val iris">2.47×</div>
+      <div class="q-hero-stat-label">Cumulative Urban Inflation</div>
     </div>
-    <div class="q-hero-logo-block">
-      <div class="q-hero-logo-mark">⚖️</div>
-      <div class="q-hero-logo-name">Qys<b>tas</b></div>
-      <div class="q-hero-logo-tag">Smart Pricing Engine</div>
+    <div class="q-hero-stat">
+      <div class="q-hero-stat-val jade">40.5%</div>
+      <div class="q-hero-stat-label">Real Purchasing Power</div>
+    </div>
+    <div class="q-hero-stat">
+      <div class="q-hero-stat-val white">24K</div>
+      <div class="q-hero-stat-label">Training Scenarios</div>
+    </div>
+    <div class="q-hero-stat">
+      <div class="q-hero-stat-val iris">0.74</div>
+      <div class="q-hero-stat-label">Model AUC Score</div>
     </div>
   </div>
+  
+  <div class="q-hero-big-logo">
+    <div class="q-hero-big-mark">⚖️</div>
+    <div class="q-hero-big-name">Qys<b>tas</b></div>
+  </div>
+
 </div>
 """, unsafe_allow_html=True)
 
@@ -979,15 +839,13 @@ with tab2:
         ))
         st.plotly_chart(fig_aff, use_container_width=True)
 
-        # ── DATAFRAME — plain, no custom CSS on it (FIXED TYPE ERROR SAFETY) ──
-        # Pure Python creation to guarantee PyArrow JSON Serialization success
-        sdf_show = pd.DataFrame({
-            "Income Bracket":      [str(x) for x in sdf["bracket"]],
-            "Pop %":               [round(float(x), 2) for x in sdf["population_pct"]],
-            "Disposable/mo (EGP)": [int(float(x)) for x in sdf["monthly_disposable"]],
-            "Burden %":            [round(float(x), 1) for x in sdf["price_burden_pct"]],
-            "Status":              ["✅ Affordable" if bool(x) else "🔴 Out of reach" for x in sdf["affordable"]]
-        })
+        # ── DATAFRAME — plain, no custom CSS on it ──
+        sdf_show = sdf[["bracket","population_pct","monthly_disposable","price_burden_pct"]].copy()
+        sdf_show["Status"] = sdf["affordable"].apply(lambda x: "✅ Affordable" if x else "🔴 Out of reach")
+        sdf_show.columns   = ["Income Bracket", "Pop %", "Disposable/mo (EGP)", "Burden %", "Status"]
+        sdf_show["Pop %"]              = sdf_show["Pop %"].round(2)
+        sdf_show["Disposable/mo (EGP)"]= sdf_show["Disposable/mo (EGP)"].round(0).astype(int)
+        sdf_show["Burden %"]           = sdf_show["Burden %"].round(1)
         st.dataframe(sdf_show, use_container_width=True, hide_index=True, height=340)
 
 # ═══════════════════════════════════════════════
@@ -1015,7 +873,7 @@ with tab3:
         target_margin    = pdd["target_margin"],
     )
 
-    with st.spinner("Running gradient boosting inference..."):
+    with st.spinner("Running inference..."):
         w_rec  = optimizer.find_optimal_weight(product)
         c_pred = optimizer.predict_market_churn(product, pdd["new_price"])
 
@@ -1088,129 +946,82 @@ with tab3:
         unsafe_allow_html=True,
     )
 
-    # ── 3 simple charts for factory owners ──
     sdf2 = pd.DataFrame(c_pred.segments_detail)
 
-    # 100% Pure Python extraction to guarantee ZERO Plotly/NumPy serialization crashes
-    b_raw     = [str(x).replace(",", "").replace(" ", "") for x in sdf2["bracket"]]
-    b_short   = [x if len(x) <= 12 else x[:10]+"…" for x in b_raw]
-    burdens   = [float(x) for x in sdf2["price_burden_pct"]]
-    ml_probs  = [float(x) * 100 for x in sdf2["ml_churn_prob"]]
-    pop_vals  = [float(x) for x in sdf2["population_pct"]]
-    at_risk   = [bool(x) for x in sdf2["at_risk"]]
-
-    ch1, ch2, ch3 = st.columns(3, gap="small")
-
-    # Chart 1: هل الزبون يقدر يشتري؟ — ✅ أو 🔴
-    with ch1:
-        st.markdown(
-            '<div class="q-section-label" style="text-align:center;margin-bottom:8px">هل يقدر يشتري؟</div>',
-            unsafe_allow_html=True,
+    # ─────────────────────────────────────────────────────────
+    # CHART 1: Market Risk Donut
+    # ─────────────────────────────────────────────────────────
+    safe_market_pct = 100.0 - c_pred.at_risk_population_pct
+    
+    fig_donut = go.Figure(go.Pie(
+        labels=["Safe Market (Retained)", "At-Risk Market (Churn)"],
+        values=[safe_market_pct, c_pred.at_risk_population_pct],
+        hole=0.68,
+        marker=dict(colors=["rgba(6,214,160,0.8)", "rgba(255,71,87,0.8)"], line=dict(width=0)),
+        textinfo="percent",
+        textfont=dict(family="Space Grotesk", size=18, color="#F8FAFC"),
+        hoverinfo="label+value",
+        hovertemplate="<b>%{label}</b><br>Size: %{value:.1f}% of Market<extra></extra>"
+    ))
+    fig_donut.update_layout(**chart(
+        height=320,
+        margin=dict(t=20, b=20, l=10, r=10),
+        showlegend=True,
+        legend=dict(
+            orientation="h", yanchor="bottom", y=-0.15, xanchor="center", x=0.5,
+            font=dict(family="Inter", size=13, color="#8B9AB3")
         )
-        
-        fig1 = go.Figure(go.Bar(
-            x=b_short,
-            y=burdens,
-            marker=dict(
-                color=["#FF4757" if r else "#06D6A0" for r in at_risk],
-                opacity=0.88, line=dict(width=0),
-            ),
-            text=["🔴 غالي" if r else "✅ مناسب" for r in at_risk],
-            textposition="outside",
-            textfont=dict(family="Inter", size=11, color="#F8FAFC"),
-            hovertemplate="<b>%{x}</b><br>عبء السعر: %{y:.1f}%<extra></extra>",
-        ))
-        fig1.add_hline(
-            y=15, line_dash="dot", line_color="#FFB020", line_width=2,
-            annotation_text="حد المقاطعة", annotation_font_color="#FFB020",
-            annotation_font_size=11,
-        )
-        fig1.update_layout(**chart(
-            height=300, title=dict(text="عبء السعر على كل فئة", font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
-            xaxis=dict(**CHART["xaxis"], tickangle=-45, tickfont=dict(size=9, color="#4A5568")),
-            yaxis=dict(**CHART["yaxis"], title="% من الدخل المتاح",
-                       title_font=dict(family="Inter", size=11, color="#8B9AB3")),
-            margin=dict(t=36, b=60, l=8, r=8),
-            showlegend=False,
-        ))
-        st.plotly_chart(fig1, use_container_width=True)
+    ))
+    
+    st.markdown("**1. Overall Market Impact**")
+    st.plotly_chart(fig_donut, use_container_width=True)
 
-    # Chart 2: نسبة المقاطعة المتوقعة — gauge بسيط لكل فئة
-    with ch2:
-        st.markdown(
-            '<div class="q-section-label" style="text-align:center;margin-bottom:8px">احتمال المقاطعة</div>',
-            unsafe_allow_html=True,
-        )
-        
-        bar_colors = []
-        for p in ml_probs:
-            if p >= 50:
-                bar_colors.append("#FF4757")
-            elif p >= 25:
-                bar_colors.append("#FFB020")
-            else:
-                bar_colors.append("#06D6A0")
+    st.markdown('<div class="q-div"></div>', unsafe_allow_html=True)
 
-        fig2 = go.Figure(go.Bar(
-            x=b_short,
-            y=ml_probs,
-            marker=dict(color=bar_colors, opacity=0.88, line=dict(width=0)),
-            text=[f"{p:.0f}%" for p in ml_probs],
-            textposition="outside",
-            textfont=dict(family="Space Grotesk", size=12, color="#F8FAFC"),
-            hovertemplate="<b>%{x}</b><br>احتمال المقاطعة: %{y:.0f}%<extra></extra>",
-        ))
-        fig2.update_layout(**chart(
-            height=300, title=dict(text="% احتمال ترك المنتج", font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
-            xaxis=dict(**CHART["xaxis"], tickangle=-45, tickfont=dict(size=9, color="#4A5568")),
-            yaxis=dict(**CHART["yaxis"], title="%", range=[0, 105],
-                       title_font=dict(family="Inter", size=11, color="#8B9AB3")),
-            margin=dict(t=36, b=60, l=8, r=8),
-            showlegend=False,
-        ))
-        st.plotly_chart(fig2, use_container_width=True)
+    # ─────────────────────────────────────────────────────────
+    # CHART 2: Impact by Income Bracket (Horizontal Bars)
+    # ─────────────────────────────────────────────────────────
+    st.markdown("**2. Impact by Income Bracket**")
+    
+    fig_bars = go.Figure(go.Bar(
+        x=sdf2["population_pct"],
+        y=sdf2["bracket"],
+        orientation='h',
+        marker=dict(
+            color=["rgba(255,71,87,0.8)" if r else "rgba(6,214,160,0.8)" for r in sdf2["at_risk"]],
+            line=dict(width=0)
+        ),
+        text=[f"{v:.1f}%" for v in sdf2["population_pct"]],
+        textposition="outside",
+        textfont=dict(family="Inter", size=12, color="#8B9AB3"),
+        hovertemplate="<b>Bracket: %{y}</b><br>Market Share: %{x:.1f}%<extra></extra>"
+    ))
+    fig_bars.update_layout(**chart(
+        height=400,
+        margin=dict(t=10, b=40, l=10, r=10),
+        xaxis=dict(**CHART["xaxis"], title="Segment Size (% of Total Market)", showgrid=True, gridcolor="rgba(255,255,255,0.03)"),
+        yaxis=dict(**CHART["yaxis"], title="", autorange="reversed"), 
+        showlegend=False
+    ))
+    st.plotly_chart(fig_bars, use_container_width=True)
 
-    # Chart 3: حجم كل فئة في السوق — pie chart بسيط
-    with ch3:
-        st.markdown(
-            '<div class="q-section-label" style="text-align:center;margin-bottom:8px">حجم كل فئة في السوق</div>',
-            unsafe_allow_html=True,
-        )
-        
-        pie_colors = ["#FF4757" if r else "#7C3AED" for r in at_risk]
-        
-        fig3 = go.Figure(go.Pie(
-            labels=b_short,
-            values=pop_vals,
-            marker=dict(colors=pie_colors, line=dict(color="#060912", width=2)),
-            textinfo="percent",
-            textfont=dict(family="Inter", size=11, color="#F8FAFC"),
-            hovertemplate="<b>%{label}</b><br>%{value:.2f}% من السوق<extra></extra>",
-            hole=0.45,
-            sort=False,
-        ))
-        fig3.update_layout(**chart(
-            height=300, title=dict(text="🔴 = في خطر  🟣 = آمن", font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
-            showlegend=False,
-            margin=dict(t=36, b=20, l=8, r=8),
-        ))
-        st.plotly_chart(fig3, use_container_width=True)
-
-    # ── DATAFRAME — clean, no CSS interference (FIXED TYPE ERROR SAFETY) ──
+    # ── DATAFRAME — clean, no CSS interference ──
     st.markdown("**Segment detail breakdown**")
-    
-    # تحويل البيانات إلى أنواع Python صريحة
-    sdf2_clean = pd.DataFrame({
-        "Bracket": [str(x) for x in sdf2["bracket"]],
-        "Pop %": [round(float(x), 2) for x in sdf2["population_pct"]],
-        "Disposable/mo (EGP)": [int(float(x)) for x in sdf2["monthly_disposable"]],
-        "Burden %": [round(float(x), 1) for x in sdf2["price_burden_pct"]],
-        "Threshold %": [round(float(x), 1) for x in sdf2["churn_threshold_pct"]],
-        "At Risk": ["🔴 Yes" if bool(x) else "🟢 No" for x in sdf2["at_risk"]],
-        "ML Prob": [f"{float(x)*100:.0f}%" for x in sdf2["ml_churn_prob"]]
-    })
-    
-    st.dataframe(sdf2_clean, use_container_width=True, hide_index=True)
+    sdf2_show = sdf2[[
+        "bracket","population_pct","monthly_disposable",
+        "price_burden_pct","churn_threshold_pct","at_risk","ml_churn_prob",
+    ]].copy()
+    sdf2_show.columns = [
+        "Bracket","Pop %","Disposable/mo (EGP)",
+        "Burden %","Threshold %","At Risk","ML Prob",
+    ]
+    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🔴 Yes" if x else "🟢 No")
+    sdf2_show["ML Prob"]             = sdf2_show["ML Prob"].apply(lambda x: f"{x:.0%}")
+    sdf2_show["Disposable/mo (EGP)"] = sdf2_show["Disposable/mo (EGP)"].round(0).astype(int)
+    sdf2_show["Pop %"]               = sdf2_show["Pop %"].round(2)
+    sdf2_show["Burden %"]            = sdf2_show["Burden %"].round(1)
+    sdf2_show["Threshold %"]         = sdf2_show["Threshold %"].round(1)
+    st.dataframe(sdf2_show, use_container_width=True, hide_index=True, height=340)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
