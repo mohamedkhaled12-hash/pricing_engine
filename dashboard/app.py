@@ -1199,18 +1199,18 @@ with tab3:
     # ── DATAFRAME — clean, no CSS interference (FIXED TYPE ERROR SAFETY) ──
     st.markdown("**Segment detail breakdown**")
     
-    # Pure Python creation to guarantee PyArrow JSON Serialization success
-    sdf2_show = pd.DataFrame({
-        "Bracket":             [str(x) for x in sdf2["bracket"]],
-        "Pop %":               [round(float(x), 2) for x in sdf2["population_pct"]],
+    # تحويل البيانات إلى أنواع Python صريحة
+    sdf2_clean = pd.DataFrame({
+        "Bracket": [str(x) for x in sdf2["bracket"]],
+        "Pop %": [round(float(x), 2) for x in sdf2["population_pct"]],
         "Disposable/mo (EGP)": [int(float(x)) for x in sdf2["monthly_disposable"]],
-        "Burden %":            [round(float(x), 1) for x in sdf2["price_burden_pct"]],
-        "Threshold %":         [round(float(x), 1) for x in sdf2["churn_threshold_pct"]],
-        "At Risk":             ["🔴 Yes" if bool(x) else "🟢 No" for x in sdf2["at_risk"]],
-        "ML Prob":             [f"{float(x)*100:.0f}%" for x in sdf2["ml_churn_prob"]],
+        "Burden %": [round(float(x), 1) for x in sdf2["price_burden_pct"]],
+        "Threshold %": [round(float(x), 1) for x in sdf2["churn_threshold_pct"]],
+        "At Risk": ["🔴 Yes" if bool(x) else "🟢 No" for x in sdf2["at_risk"]],
+        "ML Prob": [f"{float(x)*100:.0f}%" for x in sdf2["ml_churn_prob"]]
     })
     
-    st.dataframe(sdf2_show, use_container_width=True, hide_index=True, height=340)
+    st.dataframe(sdf2_clean, use_container_width=True, hide_index=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
