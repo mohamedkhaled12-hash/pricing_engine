@@ -660,39 +660,58 @@ st.markdown(f"""
 # HERO
 # ─────────────────────────────────────────────────────────
 st.markdown("""
+<style>
+.q-hero-logo-block{display:flex;flex-direction:column;align-items:center;gap:14px;flex-shrink:0;}
+.q-hero-logo-mark{width:130px;height:130px;background:linear-gradient(135deg,#7C3AED,#9D5FF5);border-radius:32px;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 60px rgba(124,58,237,0.45),0 0 120px rgba(124,58,237,0.15);animation:logo-float 4s ease-in-out infinite;}
+@keyframes logo-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.q-hero-logo-name{font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:#F8FAFC;letter-spacing:-1.5px;line-height:1;}
+.q-hero-logo-name b{color:#9D5FF5;}
+.q-hero-logo-tag{font-size:11px;font-weight:600;color:#4A5568;letter-spacing:2px;text-transform:uppercase;}
+@media(max-width:768px){.q-hero-logo-block{display:none;}}
+</style>
+
 <div class="q-hero">
   <div class="q-hero-bg">
     <div class="q-hero-grid"></div>
     <div class="q-hero-orb-1"></div>
     <div class="q-hero-orb-2"></div>
   </div>
-  <div class="q-hero-eyebrow">
-    <span class="q-hero-eyebrow-dot"></span>
-    <span class="q-hero-eyebrow-text">Egyptian Income Distribution · 2020 – 2026</span>
-  </div>
-  <div class="q-hero-h1">
-    Price smarter.<br><span class="q-hero-h1-accent">Win the market.</span>
-  </div>
-  <div class="q-hero-sub">
-    AI-powered pricing intelligence for Egyptian manufacturers — grounded in real income
-    distribution data so every decision reflects how your customers actually live today.
-  </div>
-  <div class="q-hero-stats">
-    <div class="q-hero-stat">
-      <div class="q-hero-stat-val iris">2.47×</div>
-      <div class="q-hero-stat-label">Cumulative Urban Inflation</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:32px;position:relative;">
+    <div style="flex:1;min-width:0;">
+      <div class="q-hero-eyebrow">
+        <span class="q-hero-eyebrow-dot"></span>
+        <span class="q-hero-eyebrow-text">Egyptian Income Distribution · 2020 – 2026</span>
+      </div>
+      <div class="q-hero-h1">
+        Price smarter.<br><span class="q-hero-h1-accent">Win the market.</span>
+      </div>
+      <div class="q-hero-sub">
+        AI-powered pricing intelligence for Egyptian manufacturers — grounded in real income
+        distribution data so every decision reflects how your customers actually live today.
+      </div>
+      <div class="q-hero-stats">
+        <div class="q-hero-stat">
+          <div class="q-hero-stat-val iris">2.47×</div>
+          <div class="q-hero-stat-label">Cumulative Urban Inflation</div>
+        </div>
+        <div class="q-hero-stat">
+          <div class="q-hero-stat-val jade">40.5%</div>
+          <div class="q-hero-stat-label">Real Purchasing Power</div>
+        </div>
+        <div class="q-hero-stat">
+          <div class="q-hero-stat-val white">24K</div>
+          <div class="q-hero-stat-label">Training Scenarios</div>
+        </div>
+        <div class="q-hero-stat">
+          <div class="q-hero-stat-val iris">0.74</div>
+          <div class="q-hero-stat-label">Model AUC Score</div>
+        </div>
+      </div>
     </div>
-    <div class="q-hero-stat">
-      <div class="q-hero-stat-val jade">40.5%</div>
-      <div class="q-hero-stat-label">Real Purchasing Power</div>
-    </div>
-    <div class="q-hero-stat">
-      <div class="q-hero-stat-val white">24K</div>
-      <div class="q-hero-stat-label">Training Scenarios</div>
-    </div>
-    <div class="q-hero-stat">
-      <div class="q-hero-stat-val iris">0.74</div>
-      <div class="q-hero-stat-label">Model AUC Score</div>
+    <div class="q-hero-logo-block">
+      <div class="q-hero-logo-mark">⚖️</div>
+      <div class="q-hero-logo-name">Qys<b>tas</b></div>
+      <div class="q-hero-logo-tag">Smart Pricing Engine</div>
     </div>
   </div>
 </div>
@@ -1046,44 +1065,105 @@ with tab3:
         unsafe_allow_html=True,
     )
 
-    # Segment chart
+    # ── 3 simple charts for factory owners ──
     sdf2 = pd.DataFrame(c_pred.segments_detail)
+    brackets  = [b.replace(",","").replace(" ","") for b in sdf2["bracket"]]
+    b_short   = [b if len(b) <= 12 else b[:10]+"…" for b in sdf2["bracket"]]
 
-    fig_s = go.Figure()
-    fig_s.add_trace(go.Bar(
-        x=sdf2["bracket"], y=sdf2["price_burden_pct"],
-        marker=dict(
-            color=["rgba(255,71,87,0.72)" if r else "rgba(6,214,160,0.62)" for r in sdf2["at_risk"]],
-            line=dict(width=0),
-        ),
-        name="Price Burden %",
-        text=[f"{v:.1f}%" for v in sdf2["price_burden_pct"]],
-        textposition="outside", textfont=dict(family="Inter", size=10, color="#8B9AB3"),
-        hovertemplate="<b>%{x}</b><br>Burden: %{y:.1f}%<extra>Burden</extra>",
-    ))
-    fig_s.add_trace(go.Scatter(
-        x=sdf2["bracket"], y=sdf2["churn_threshold_pct"],
-        mode="lines+markers", name="Churn Threshold",
-        line=dict(color="#FFB020", width=2.5, dash="dash"),
-        marker=dict(size=8, color="#FFB020"),
-        hovertemplate="<b>%{x}</b><br>Threshold: %{y:.1f}%<extra>Threshold</extra>",
-    ))
-    fig_s.add_trace(go.Scatter(
-        x=sdf2["bracket"], y=[v * 100 for v in sdf2["ml_churn_prob"]],
-        mode="lines+markers", name="ML Churn Probability %",
-        line=dict(color="#9D5FF5", width=2),
-        marker=dict(size=7, color="#9D5FF5"),
-        fill="tozeroy", fillcolor="rgba(124,58,237,0.06)",
-        hovertemplate="<b>%{x}</b><br>ML Prob: %{y:.1f}%<extra>ML Model</extra>",
-    ))
-    fig_s.update_layout(**chart(
-        barmode="overlay", height=400,
-        xaxis=dict(**CHART["xaxis"], tickangle=-30),
-        yaxis=dict(**CHART["yaxis"], title="%",
-                   title_font=dict(family="Inter", size=12, color="#8B9AB3")),
-        legend=dict(**CHART["legend"], x=0.62, y=0.97),
-    ))
-    st.plotly_chart(fig_s, use_container_width=True)
+    ch1, ch2, ch3 = st.columns(3, gap="small")
+
+    # Chart 1: هل الزبون يقدر يشتري؟ — ✅ أو 🔴
+    with ch1:
+        st.markdown(
+            '<div class="q-section-label" style="text-align:center;margin-bottom:8px">هل يقدر يشتري؟</div>',
+            unsafe_allow_html=True,
+        )
+        fig1 = go.Figure(go.Bar(
+            x=b_short,
+            y=sdf2["price_burden_pct"],
+            marker=dict(
+                color=["#FF4757" if r else "#06D6A0" for r in sdf2["at_risk"]],
+                opacity=0.88, line=dict(width=0),
+            ),
+            text=["🔴 غالي" if r else "✅ مناسب" for r in sdf2["at_risk"]],
+            textposition="outside",
+            textfont=dict(family="Inter", size=11, color="#F8FAFC"),
+            hovertemplate="<b>%{x}</b><br>عبء السعر: %{y:.1f}%<extra></extra>",
+        ))
+        fig1.add_hline(
+            y=15, line_dash="dot", line_color="#FFB020", line_width=2,
+            annotation_text="حد المقاطعة", annotation_font_color="#FFB020",
+            annotation_font_size=11,
+        )
+        fig1.update_layout(**chart(
+            height=300, title=dict(text="عبء السعر على كل فئة", font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
+            xaxis=dict(**CHART["xaxis"], tickangle=-45, tickfont=dict(size=9, color="#4A5568")),
+            yaxis=dict(**CHART["yaxis"], title="% من الدخل المتاح",
+                       title_font=dict(family="Inter", size=11, color="#8B9AB3")),
+            margin=dict(t=36, b=60, l=8, r=8),
+            showlegend=False,
+        ))
+        st.plotly_chart(fig1, use_container_width=True)
+
+    # Chart 2: نسبة المقاطعة المتوقعة — gauge بسيط لكل فئة
+    with ch2:
+        st.markdown(
+            '<div class="q-section-label" style="text-align:center;margin-bottom:8px">احتمال المقاطعة</div>',
+            unsafe_allow_html=True,
+        )
+        ml_probs = [v * 100 for v in sdf2["ml_churn_prob"]]
+        bar_colors = []
+        for p in ml_probs:
+            if p >= 50:
+                bar_colors.append("#FF4757")
+            elif p >= 25:
+                bar_colors.append("#FFB020")
+            else:
+                bar_colors.append("#06D6A0")
+
+        fig2 = go.Figure(go.Bar(
+            x=b_short,
+            y=ml_probs,
+            marker=dict(color=bar_colors, opacity=0.88, line=dict(width=0)),
+            text=[f"{p:.0f}%" for p in ml_probs],
+            textposition="outside",
+            textfont=dict(family="Space Grotesk", size=12, color="#F8FAFC"),
+            hovertemplate="<b>%{x}</b><br>احتمال المقاطعة: %{y:.0f}%<extra></extra>",
+        ))
+        fig2.update_layout(**chart(
+            height=300, title=dict(text="% احتمال ترك المنتج", font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
+            xaxis=dict(**CHART["xaxis"], tickangle=-45, tickfont=dict(size=9, color="#4A5568")),
+            yaxis=dict(**CHART["yaxis"], title="%", range=[0, 105],
+                       title_font=dict(family="Inter", size=11, color="#8B9AB3")),
+            margin=dict(t=36, b=60, l=8, r=8),
+            showlegend=False,
+        ))
+        st.plotly_chart(fig2, use_container_width=True)
+
+    # Chart 3: حجم كل فئة في السوق — pie chart بسيط
+    with ch3:
+        st.markdown(
+            '<div class="q-section-label" style="text-align:center;margin-bottom:8px">حجم كل فئة في السوق</div>',
+            unsafe_allow_html=True,
+        )
+        pop_vals = [round(v * 100, 2) for v in sdf2["population_pct"]]
+        pie_colors = ["#FF4757" if r else "#7C3AED" for r in sdf2["at_risk"]]
+        fig3 = go.Figure(go.Pie(
+            labels=b_short,
+            values=pop_vals,
+            marker=dict(colors=pie_colors, line=dict(color=["#060912"]*len(b_short), width=2)),
+            textinfo="percent",
+            textfont=dict(family="Inter", size=11, color="#F8FAFC"),
+            hovertemplate="<b>%{label}</b><br>%{value:.2f}% من السوق<extra></extra>",
+            hole=0.45,
+            sort=False,
+        ))
+        fig3.update_layout(**chart(
+            height=300, title=dict(text="🔴 = في خطر  🟣 = آمن", font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
+            showlegend=False,
+            margin=dict(t=36, b=20, l=8, r=8),
+        ))
+        st.plotly_chart(fig3, use_container_width=True)
 
     # ── DATAFRAME — clean, no CSS interference ──
     st.markdown("**Segment detail breakdown**")
