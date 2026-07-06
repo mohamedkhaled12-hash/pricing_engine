@@ -244,6 +244,27 @@ html, body,
 .q-hero-stat-val.white { background:linear-gradient(135deg,#fff 60%,rgba(255,255,255,0.5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .q-hero-stat-label { font-size: 11px; font-weight: 500; color: var(--dim); margin-top: 6px; }
 
+/* BIG LOGO IN THE EMPTY SIDE */
+.q-hero-big-logo {
+  position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  pointer-events: none; z-index: 10;
+}
+.q-hero-big-mark {
+  width: 170px; height: 170px;
+  background: linear-gradient(135deg, var(--iris), var(--iris-2));
+  border-radius: 44px; display: flex; align-items: center; justify-content: center;
+  font-size: 90px; box-shadow: 0 0 80px var(--iris-glow);
+}
+.q-hero-big-name {
+  font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 700;
+  color: var(--snow); letter-spacing: -2px; line-height: 1;
+}
+.q-hero-big-name b { color: var(--iris-2); }
+@media (max-width: 1150px) {
+  .q-hero-big-logo { display: none; }
+}
+
 /* ═══════════════════════════════════════
    BODY
 ═══════════════════════════════════════ */
@@ -568,6 +589,12 @@ st.markdown("""
       <div class="q-hero-stat-label">Model AUC Score</div>
     </div>
   </div>
+  
+  <div class="q-hero-big-logo">
+    <div class="q-hero-big-mark">⚖️</div>
+    <div class="q-hero-big-name">Qys<b>tas</b></div>
+  </div>
+
 </div>
 """, unsafe_allow_html=True)
 
@@ -738,9 +765,9 @@ with tab2:
             current_price  = st.number_input("Current price (EGP)",         min_value=1.0,  max_value=500.0,  value=25.0, step=0.5)
             current_weight = st.number_input("Current weight (grams)",       min_value=10.0, max_value=5000.0, value=100.0, step=5.0)
             cost_per_gram  = st.number_input("Production cost / gram (EGP)", min_value=0.01, max_value=10.0,   value=0.18, step=0.01,
-                                              help="Raw materials + manufacturing + packaging")
+                                             help="Raw materials + manufacturing + packaging")
             new_price_in   = st.number_input("Proposed new price (EGP)",     min_value=1.0,  max_value=500.0,  value=30.0, step=0.5,
-                                              help="Used to predict churn if you raise price without changing weight")
+                                             help="Used to predict churn if you raise price without changing weight")
         with c2:
             st.markdown("**⚙️ Analysis parameters**")
             area_sel      = st.selectbox("Target region", ["Urban", "Rural"])
