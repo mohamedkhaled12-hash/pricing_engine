@@ -4,6 +4,9 @@ pandas
 numpy
 scipy
 scikit-learn
+xgboost
+lightgbm
+optuna
 fastapi
 uvicorn
 pydantic
