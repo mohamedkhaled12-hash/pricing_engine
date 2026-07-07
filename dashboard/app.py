@@ -1173,7 +1173,7 @@ with tab3:
         "Bracket","Pop %","Disposable/mo (EGP)",
         "Burden %","Threshold %","At Risk","ML Prob",
     ]
-    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🔴 Yes" if x else "🟢 No")
+    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🟢 Yes" if x else "🔴 No")
     sdf2_show["ML Prob"]             = sdf2_show["ML Prob"].apply(lambda x: f"{x:.0%}")
     sdf2_show["Disposable/mo (EGP)"] = sdf2_show["Disposable/mo (EGP)"].round(0).astype(int)
     sdf2_show["Pop %"]               = sdf2_show["Pop %"].round(2)
