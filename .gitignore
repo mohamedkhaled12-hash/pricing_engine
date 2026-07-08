@@ -13,7 +13,7 @@ env/
 .venv/
 
 # Model file (كبير — مش هنرفعه، هيتدرب تلقائي على Streamlit)
-models/churn_model.pkl
+
 
 # OS
 .DS_Store
