@@ -449,8 +449,43 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 .q-div { height:1px; background:var(--border); margin:28px 0; }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE — TABLET (≤ 1024px)
+   REC-CARD (used in new Strategy Lab tab —
+   additive only, does not alter any rule above)
 ═══════════════════════════════════════ */
+.q-rec {
+  border-radius: var(--r-lg); padding: 18px 20px; border: 1px solid;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.q-rec:hover { transform: translateY(-3px); }
+.r-jade { background: rgba(6,214,160,0.05);  border-color: rgba(6,214,160,0.22); }
+.r-crim { background: rgba(255,71,87,0.05);   border-color: rgba(255,71,87,0.22); }
+.rec-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.b-jade { background: rgba(6,214,160,0.16); color: var(--jade); }
+.b-crim { background: rgba(255,71,87,0.16);  color: var(--crimson); }
+.rec-title {
+  font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;
+  color: var(--snow); margin-bottom: 12px;
+}
+.rec-line {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 13px;
+}
+.rec-line:last-child { border-bottom: none; }
+.rec-k { color: var(--dim); font-weight: 500; }
+.rec-v {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px;
+  color: var(--snow);
+}
+.v-jade { color: var(--jade); }
+.v-crim { color: var(--crimson); }
+.v-iris { color: var(--iris-2); }
+
+
 @media (max-width: 1024px) {
   /* Nav */
   .q-nav { padding: 0 24px; }
@@ -837,10 +872,11 @@ st.markdown("""
 # ─────────────────────────────────────────────────────────
 # TABS
 # ─────────────────────────────────────────────────────────
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     "📡  Income Radar",
     "⚙️  Product Input",
     "🎯  AI Recommendation",
+    "🧪  Strategy Lab",
 ])
 
 # ═══════════════════════════════════════════════
@@ -1236,7 +1272,240 @@ with tab3:
     sdf2_show["Threshold %"]         = sdf2_show["Threshold %"].round(1)
     st.dataframe(sdf2_show, use_container_width=True, hide_index=True, height=340)
 
+    # ── Export (new, additive — does not affect anything above) ──
+    exp_col1, exp_col2 = st.columns([1, 3])
+    with exp_col1:
+        csv_bytes = sdf2_show.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            "⬇️ Export segment report (CSV)",
+            data=csv_bytes,
+            file_name=f"qystas_churn_report_{pdd['area'].lower()}_{c_pred.new_price:.0f}egp.csv",
+            mime="text/csv",
+            use_container_width=True,
+        )
+
 st.markdown('</div>', unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════
+# TAB 4 — STRATEGY LAB  (new — additive tab, does
+# not modify tabs 1-3 or the optimizer/model logic)
+# ═══════════════════════════════════════════════
+with tab4:
+    st.markdown('<div class="q-body">', unsafe_allow_html=True)
+    st.markdown('<div class="q-section-label">Advanced Analysis</div>', unsafe_allow_html=True)
+    st.markdown('<div class="q-section-title">Strategy Lab</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="q-section-sub">Explore the full pricing space: '
+        'segment quality scoring, the price sensitivity curve, and the '
+        'A / B / Hybrid weight strategies side by side.</div>',
+        unsafe_allow_html=True,
+    )
+
+    if "pd" not in st.session_state:
+        st.markdown(
+            '<div class="q-callout call-amber"><span class="call-ico">⚠️</span>'
+            '<div>No product configured yet. Go to <strong>Product Input</strong> '
+            'and run the analysis first.</div></div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        lab_pdd = st.session_state["pd"]
+        lab_product = ProductInput(
+            current_price    = lab_pdd["current_price"],
+            current_weight_g = lab_pdd["current_weight_g"],
+            cost_per_gram    = lab_pdd["cost_per_gram"],
+            area             = lab_pdd["area"],
+            purchase_freq    = lab_pdd["purchase_freq"],
+            target_margin    = lab_pdd["target_margin"],
+        )
+
+        # ── Section A: Segment Quality Scoring ──
+        st.markdown("### 🧭 Segment Quality Scoring")
+        st.markdown(
+            '<div class="q-section-sub">Every income bracket scored 0–100 on '
+            'affordability, stability (inverse churn risk), and market value.</div>',
+            unsafe_allow_html=True,
+        )
+
+        with st.spinner("Scoring market segments..."):
+            seg_scores = optimizer.score_market_segments(lab_product)
+
+        score_rows = [{
+            "Bracket":     s.bracket,
+            "Label":       s.segment_label,
+            "Pop %":       s.population_pct,
+            "Affordability": s.affordability,
+            "Stability":   s.stability,
+            "Market Value": s.market_value,
+            "Composite":   s.composite_score,
+        } for s in seg_scores]
+        score_df = pd.DataFrame(score_rows)
+
+        fig_seg = go.Figure(go.Bar(
+            x=score_df["Bracket"], y=score_df["Composite"],
+            marker=dict(
+                color=score_df["Composite"],
+                colorscale=[[0, "#FF4757"], [0.5, "#FFB020"], [1, "#06D6A0"]],
+                cmin=0, cmax=100, line=dict(width=0),
+            ),
+            text=[f"{v:.0f}" for v in score_df["Composite"]],
+            textposition="outside",
+            textfont=dict(family="Space Grotesk", size=12, color="#F8FAFC"),
+            hovertemplate="<b>%{x}</b><br>Composite Score: %{y:.1f}/100<extra></extra>",
+        ))
+        fig_seg.update_layout(**chart(
+            height=340, title=dict(text="Composite Segment Score (0–100)",
+                                    font=dict(family="Space Grotesk", size=13, color="#8B9AB3"), x=0.5),
+            xaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
+                       zeroline=False, tickangle=-30, tickfont=dict(family="Inter", size=10, color="#4A5568")),
+            yaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
+                       zeroline=False, range=[0, 110], title="Score",
+                       title_font=dict(family="Inter", size=11, color="#8B9AB3")),
+            showlegend=False, margin=dict(t=40, b=70, l=8, r=8),
+        ))
+        st.plotly_chart(fig_seg, use_container_width=True)
+
+        best_seg  = score_df.iloc[score_df["Composite"].idxmax()]
+        worst_seg = score_df.iloc[score_df["Composite"].idxmin()]
+        st.markdown(
+            f'<div class="q-callout call-jade"><span class="call-ico">⭐</span>'
+            f'<div><strong>Best-fit segment:</strong> {best_seg["Bracket"]} '
+            f'(score {best_seg["Composite"]:.0f}/100, {best_seg["Label"]}) — '
+            f'prioritize retention offers here. '
+            f'<strong>Weakest segment:</strong> {worst_seg["Bracket"]} '
+            f'(score {worst_seg["Composite"]:.0f}/100) — most price-sensitive, '
+            f'consider smaller pack sizes for this group.</div></div>',
+            unsafe_allow_html=True,
+        )
+
+        with st.expander("📋 Full segment scoring table"):
+            st.dataframe(score_df, use_container_width=True, hide_index=True, height=320)
+
+        st.markdown('<div class="q-div"></div>', unsafe_allow_html=True)
+
+        # ── Section B: Price Sensitivity Curve + Sweet Spot ──
+        st.markdown("### 📉 Price Sensitivity Curve")
+        st.markdown(
+            '<div class="q-section-sub">Simulated churn and revenue index across a full range '
+            'of price increases (0–80%). The gold marker is the revenue-maximizing sweet spot.</div>',
+            unsafe_allow_html=True,
+        )
+
+        with st.spinner("Simulating price sensitivity curve..."):
+            curve_df = optimizer.price_sensitivity_curve(lab_product, n_points=14)
+
+        sweet_row = curve_df[curve_df["is_sweet_spot"]].iloc[0]
+
+        fig_curve = go.Figure()
+        fig_curve.add_trace(go.Scatter(
+            x=curve_df["price_increase_pct"], y=curve_df["churn_pct"],
+            mode="lines+markers", name="Predicted Churn %",
+            line=dict(color="#FF4757", width=2.5),
+            marker=dict(size=6, color="#FF4757"),
+            hovertemplate="+%{x:.0f}%% price<br>Churn: %{y:.1f}%<extra></extra>",
+        ))
+        fig_curve.add_trace(go.Scatter(
+            x=curve_df["price_increase_pct"], y=curve_df["revenue_index"],
+            mode="lines+markers", name="Revenue Index (100=baseline)",
+            line=dict(color="#9D5FF5", width=2.5),
+            marker=dict(size=6, color="#9D5FF5"),
+            yaxis="y2",
+            hovertemplate="+%{x:.0f}%% price<br>Revenue Index: %{y:.1f}<extra></extra>",
+        ))
+        fig_curve.add_trace(go.Scatter(
+            x=[sweet_row["price_increase_pct"]], y=[sweet_row["revenue_index"]],
+            mode="markers", name="Sweet Spot",
+            marker=dict(size=16, color="#FFB020", symbol="star",
+                        line=dict(color="#F8FAFC", width=1)),
+            yaxis="y2",
+            hovertemplate=f"<b>Sweet spot: +{sweet_row['price_increase_pct']:.0f}%%</b><br>"
+                          f"Revenue Index: {sweet_row['revenue_index']:.1f}<extra></extra>",
+        ))
+        fig_curve.update_layout(**chart(
+            height=380,
+            xaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
+                       zeroline=False, title="Price Increase %",
+                       title_font=dict(family="Inter", size=12, color="#8B9AB3"),
+                       tickfont=dict(family="Inter", size=11, color="#4A5568")),
+            yaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
+                       zeroline=False, title="Churn %",
+                       title_font=dict(family="Inter", size=12, color="#FF6B78"),
+                       tickfont=dict(family="Inter", size=11, color="#4A5568")),
+            yaxis2=dict(overlaying="y", side="right", gridcolor="rgba(0,0,0,0)",
+                        title="Revenue Index", title_font=dict(family="Inter", size=12, color="#9D5FF5"),
+                        tickfont=dict(family="Inter", size=11, color="#4A5568")),
+            legend=dict(bgcolor="rgba(13,17,23,0.88)", bordercolor="rgba(255,255,255,0.08)",
+                        borderwidth=1, font=dict(family="Inter", size=11, color="#8B9AB3"),
+                        x=0.02, y=0.98),
+        ))
+        st.plotly_chart(fig_curve, use_container_width=True)
+
+        st.markdown(
+            f'<div class="q-callout call-iris"><span class="call-ico">💡</span>'
+            f'<div><strong>Revenue-optimal move:</strong> raising price by '
+            f'<strong>+{sweet_row["price_increase_pct"]:.0f}%</strong> '
+            f'(to {sweet_row["new_price"]:.2f} EGP) maximizes projected revenue '
+            f'(index {sweet_row["revenue_index"]:.1f} vs. 100 baseline), with an estimated '
+            f'<strong>{sweet_row["churn_pct"]:.1f}%</strong> churn and '
+            f'<strong>{sweet_row["retention_pct"]:.1f}%</strong> retention.</div></div>',
+            unsafe_allow_html=True,
+        )
+
+        st.markdown('<div class="q-div"></div>', unsafe_allow_html=True)
+
+        # ── Section C: A / B / Hybrid Strategy Comparison ──
+        st.markdown("### ⚖️ Strategy Comparison — A vs B vs Hybrid")
+        st.markdown(
+            '<div class="q-section-sub">Three ways to hit your target margin: '
+            'shrink the pack (A), keep everything as-is (B), or split the difference (Hybrid).</div>',
+            unsafe_allow_html=True,
+        )
+
+        with st.spinner("Computing strategy comparison..."):
+            strat_w = optimizer.find_optimal_weight(lab_product)
+
+        strat_cols = st.columns(3)
+        with strat_cols[0]:
+            st.markdown(f"""
+            <div class="q-rec r-jade">
+              <span class="rec-badge b-jade">Strategy A</span>
+              <div class="rec-title">Shrink the Pack</div>
+              <div class="rec-line"><span class="rec-k">New weight</span><span class="rec-v v-jade">{strat_w.optimal_weight_g}g</span></div>
+              <div class="rec-line"><span class="rec-k">Reduction</span><span class="rec-v">−{strat_w.weight_reduction_pct}%</span></div>
+              <div class="rec-line"><span class="rec-k">Margin</span><span class="rec-v v-jade">{strat_w.new_margin_pct}%</span></div>
+            </div>
+            """, unsafe_allow_html=True)
+        with strat_cols[1]:
+            b_class = "r-jade" if strat_w.strategy_b_feasible else "r-crim"
+            b_badge = "b-jade" if strat_w.strategy_b_feasible else "b-crim"
+            st.markdown(f"""
+            <div class="q-rec {b_class}">
+              <span class="rec-badge {b_badge}">Strategy B</span>
+              <div class="rec-title">Keep As-Is</div>
+              <div class="rec-line"><span class="rec-k">Weight</span><span class="rec-v">{lab_product.current_weight_g:.0f}g</span></div>
+              <div class="rec-line"><span class="rec-k">Price</span><span class="rec-v">{lab_product.current_price:.2f} EGP</span></div>
+              <div class="rec-line"><span class="rec-k">Margin</span><span class="rec-v {'v-jade' if strat_w.strategy_b_feasible else 'v-crim'}">{strat_w.strategy_b_margin}%</span></div>
+            </div>
+            """, unsafe_allow_html=True)
+        with strat_cols[2]:
+            st.markdown(f"""
+            <div class="q-rec r-jade">
+              <span class="rec-badge b-jade">Hybrid</span>
+              <div class="rec-title">Split the Difference</div>
+              <div class="rec-line"><span class="rec-k">New price</span><span class="rec-v v-iris">{strat_w.hybrid_price:.2f} EGP</span></div>
+              <div class="rec-line"><span class="rec-k">New weight</span><span class="rec-v v-iris">{strat_w.hybrid_weight_g}g</span></div>
+              <div class="rec-line"><span class="rec-k">Margin</span><span class="rec-v v-jade">{strat_w.hybrid_margin}%</span></div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown(
+            f'<div class="q-callout call-iris" style="margin-top:16px">'
+            f'<span class="call-ico">🔀</span>'
+            f'<div>{strat_w.hybrid_recommendation}</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────
 # FOOTER
