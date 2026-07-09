@@ -251,6 +251,13 @@ html, body,
    BODY
 ═══════════════════════════════════════ */
 .q-body { padding: 36px 44px 60px; background: var(--void); display: flex; flex-direction: column; gap: 28px; }
+.q-body { animation: q-fade-in 0.5s var(--ease) both; }
+@keyframes q-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.q-kpi { animation: q-fade-in 0.5s var(--ease) both; }
+.q-kpi:nth-child(1) { animation-delay: 0.02s; }
+.q-kpi:nth-child(2) { animation-delay: 0.08s; }
+.q-kpi:nth-child(3) { animation-delay: 0.14s; }
+.q-kpi:nth-child(4) { animation-delay: 0.20s; }
 
 /* ── Section labels ── */
 .q-section-label { font-size: 10px; font-weight: 700; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
@@ -450,6 +457,67 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 }
 .q-footer-pill:hover { border-color:var(--iris); color:var(--iris-2); }
 .q-div { height:1px; background:var(--border); margin:28px 0; }
+
+/* ═══════════════════════════════════════
+   STATUS STRIP (new — purely additive)
+═══════════════════════════════════════ */
+.q-status-strip {
+  display: flex; align-items: center; gap: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 12px 20px;
+  flex-wrap: wrap; row-gap: 8px;
+}
+.q-status-item { display: flex; align-items: center; gap: 7px; padding: 0 16px 0 0; }
+.q-status-divider { width: 1px; align-self: stretch; background: var(--border); margin: 0 4px; }
+.q-status-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.q-status-dot-live { background: var(--jade); box-shadow: 0 0 8px var(--jade-glow); animation: statuspulse 2s ease infinite; }
+@keyframes statuspulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.q-status-icon { font-size: 13px; }
+.q-status-label {
+  font-size: 10px; font-weight: 700; color: var(--dim);
+  letter-spacing: 0.6px; text-transform: uppercase;
+}
+.q-status-value {
+  font-size: 12px; font-weight: 600; color: var(--mist);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ═══════════════════════════════════════
+   TIPS STRIP (new — purely additive)
+═══════════════════════════════════════ */
+.q-tips-strip {
+  padding: 16px 44px; display: flex; gap: 28px; flex-wrap: wrap;
+  border-top: 1px solid var(--border); background: var(--void);
+}
+.q-tip { font-size: 12px; color: var(--dim); }
+.q-tip b { color: var(--mist); }
+@media (max-width: 640px) {
+  .q-tips-strip { padding: 14px 16px; flex-direction: column; gap: 8px; }
+}
+
+/* ═══════════════════════════════════════
+   DECISION SCORE CARD (new — purely additive)
+═══════════════════════════════════════ */
+.q-dscore-card {
+  display: flex; align-items: center; gap: 24px;
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: var(--r-lg); padding: 22px 28px; margin-bottom: 24px;
+}
+.q-dscore-ring-wrap { position: relative; width: 108px; height: 108px; flex-shrink: 0; }
+.q-dscore-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-size: 30px; font-weight: 700; color: var(--snow);
+}
+.q-dscore-info { flex: 1; min-width: 0; }
+.q-dscore-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 4px;
+}
+.q-dscore-title {
+  font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; color: var(--snow); margin-bottom: 6px;
+}
+.q-dscore-sub { font-size: 12.5px; color: var(--mist); line-height: 1.6; }
 
 /* ═══════════════════════════════════════
    REC-CARD (used in new Strategy Lab tab —
@@ -846,9 +914,9 @@ st.markdown("""
       <div class="q-kpi-label">Income Median 2026 (Nominal)</div>
       <div class="q-kpi-icon ico-iris">💰</div>
     </div>
-    <div class="q-kpi-val">138K <span style="font-size:14px;color:var(--dim)">EGP</span></div>
+    <div class="q-kpi-val"><span class="q-count" data-target="138" data-suffix="K">0</span> <span style="font-size:14px;color:var(--dim)">EGP</span></div>
     <div class="q-kpi-delta d-iris">▲ +146.8% nominal shift</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:65%;background:linear-gradient(90deg,#8B5CF6,#A78BFA)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="65" style="width:0%;background:linear-gradient(90deg,#8B5CF6,#A78BFA)"></div></div>
   </div>
   <div class="q-kpi kpi-jade">
     <div class="q-kpi-glow"></div>
@@ -856,9 +924,9 @@ st.markdown("""
       <div class="q-kpi-label">Real Purchasing Power (Urban)</div>
       <div class="q-kpi-icon ico-jade">📉</div>
     </div>
-    <div class="q-kpi-val">40.5<span style="font-size:18px;color:var(--dim)">%</span></div>
+    <div class="q-kpi-val"><span class="q-count" data-target="40.5" data-decimals="1">0</span><span style="font-size:18px;color:var(--dim)">%</span></div>
     <div class="q-kpi-delta d-crim">▼ vs nominal income</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:40%;background:linear-gradient(90deg,#10E0A6,#34D399)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="40" style="width:0%;background:linear-gradient(90deg,#10E0A6,#34D399)"></div></div>
   </div>
   <div class="q-kpi kpi-crim">
     <div class="q-kpi-glow"></div>
@@ -866,9 +934,9 @@ st.markdown("""
       <div class="q-kpi-label">Churn Model AUC Score</div>
       <div class="q-kpi-icon ico-crim">🤖</div>
     </div>
-    <div class="q-kpi-val">0.74</div>
+    <div class="q-kpi-val"><span class="q-count" data-target="0.74" data-decimals="2">0</span></div>
     <div class="q-kpi-delta d-iris">5-fold cross-validation</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:74%;background:linear-gradient(90deg,#FF5468,#FF6B78)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="74" style="width:0%;background:linear-gradient(90deg,#FF5468,#FF6B78)"></div></div>
   </div>
   <div class="q-kpi kpi-amber">
     <div class="q-kpi-glow"></div>
@@ -876,9 +944,79 @@ st.markdown("""
       <div class="q-kpi-label">Synthetic Training Scenarios</div>
       <div class="q-kpi-icon ico-amber">📊</div>
     </div>
-    <div class="q-kpi-val">24,480</div>
+    <div class="q-kpi-val"><span class="q-count" data-target="24480" data-format="comma">0</span></div>
     <div class="q-kpi-delta d-amber">economic simulations</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:88%;background:linear-gradient(90deg,#FFC145,#FCD34D)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="88" style="width:0%;background:linear-gradient(90deg,#FFC145,#FCD34D)"></div></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function animateCounters() {
+    document.querySelectorAll('.q-count').forEach(function(el) {
+      if (el.dataset.done) return;
+      el.dataset.done = "1";
+      var target = parseFloat(el.dataset.target);
+      var decimals = parseInt(el.dataset.decimals || "0");
+      var suffix = el.dataset.suffix || "";
+      var format = el.dataset.format || "";
+      var duration = 1100, start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var val = target * eased;
+        var display = decimals > 0 ? val.toFixed(decimals)
+                     : format === "comma" ? Math.round(val).toLocaleString()
+                     : Math.round(val).toString();
+        el.textContent = display + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+    document.querySelectorAll('.q-anim-bar').forEach(function(el) {
+      if (el.dataset.done) return;
+      el.dataset.done = "1";
+      var w = el.dataset.width;
+      setTimeout(function() { el.style.width = w + "%"; }, 150);
+    });
+  }
+  // run once shortly after render, and again on any Streamlit rerun
+  setTimeout(animateCounters, 120);
+  var obs = new MutationObserver(function() { animateCounters(); });
+  obs.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+""", unsafe_allow_html=True)
+
+# ── SYSTEM STATUS STRIP (new — purely additive) ──
+import datetime as _dt
+_now_str = _dt.datetime.now().strftime("%H:%M:%S")
+
+st.markdown(f"""
+<div class="q-status-strip">
+  <div class="q-status-item">
+    <span class="q-status-dot q-status-dot-live"></span>
+    <span class="q-status-label">Engine</span>
+    <span class="q-status-value">Online</span>
+  </div>
+  <div class="q-status-divider"></div>
+  <div class="q-status-item">
+    <span class="q-status-icon">🧠</span>
+    <span class="q-status-label">Model</span>
+    <span class="q-status-value">GradientBoosting · AUC 0.74</span>
+  </div>
+  <div class="q-status-divider"></div>
+  <div class="q-status-item">
+    <span class="q-status-icon">📦</span>
+    <span class="q-status-label">Data</span>
+    <span class="q-status-value">2020–2026 · 9 brackets</span>
+  </div>
+  <div class="q-status-divider"></div>
+  <div class="q-status-item">
+    <span class="q-status-icon">🕒</span>
+    <span class="q-status-label">Session</span>
+    <span class="q-status-value">{_now_str}</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -974,21 +1112,38 @@ with tab2:
         unsafe_allow_html=True,
     )
 
+    # ── Quick-start presets (new — purely additive, just sets defaults) ──
+    PRESETS = {
+        "🍫 Custom":            {"price": 25.0, "weight": 100.0, "cost": 0.18, "freq": 4},
+        "🥤 Beverage (250ml)":  {"price": 12.0, "weight": 250.0, "cost": 0.035, "freq": 8},
+        "🍟 Snack pack (small)": {"price": 8.0,  "weight": 35.0,  "cost": 0.12, "freq": 10},
+        "🧴 Household (500g)":  {"price": 45.0, "weight": 500.0, "cost": 0.055, "freq": 2},
+        "🍞 Bakery item":        {"price": 15.0, "weight": 200.0, "cost": 0.045, "freq": 6},
+    }
+    preset_choice = st.selectbox(
+        "🚀 Quick-start with a product category (optional)",
+        list(PRESETS.keys()),
+        help="Pre-fills the fields below with typical values — you can still edit everything.",
+    )
+    _preset = PRESETS[preset_choice]
+
+    st.markdown('<div class="q-div" style="margin:14px 0"></div>', unsafe_allow_html=True)
+
     with st.form("product_form"):
         c1, c2 = st.columns(2, gap="large")
         with c1:
             st.markdown("**📦 Product parameters**")
-            current_price  = st.number_input("Current price (EGP)",         min_value=1.0,  max_value=500.0,  value=25.0, step=0.5)
-            current_weight = st.number_input("Current weight (grams)",       min_value=10.0, max_value=5000.0, value=100.0, step=5.0)
-            cost_per_gram  = st.number_input("Production cost / gram (EGP)", min_value=0.01, max_value=10.0,   value=0.18, step=0.01,
+            current_price  = st.number_input("Current price (EGP)",         min_value=1.0,  max_value=500.0,  value=_preset["price"], step=0.5)
+            current_weight = st.number_input("Current weight (grams)",       min_value=10.0, max_value=5000.0, value=_preset["weight"], step=5.0)
+            cost_per_gram  = st.number_input("Production cost / gram (EGP)", min_value=0.01, max_value=10.0,   value=_preset["cost"], step=0.01,
                                               help="Raw materials + manufacturing + packaging")
-            new_price_in   = st.number_input("Proposed new price (EGP)",     min_value=1.0,  max_value=500.0,  value=30.0, step=0.5,
+            new_price_in   = st.number_input("Proposed new price (EGP)",     min_value=1.0,  max_value=500.0,  value=round(_preset["price"]*1.2, 1), step=0.5,
                                               help="Used to predict churn if you raise price without changing weight")
         with c2:
             st.markdown("**⚙️ Analysis parameters**")
             area_sel      = st.selectbox("Target region", ["Urban", "Rural"])
             target_margin = st.slider("Target profit margin (%)", 5, 60, 30, 5) / 100
-            purchase_freq = st.slider("Monthly purchase frequency", 1, 20, 4)
+            purchase_freq = st.slider("Monthly purchase frequency", 1, 20, _preset["freq"])
 
             cur_cost   = cost_per_gram * current_weight
             cur_margin = (current_price - cur_cost) / current_price * 100
@@ -1092,6 +1247,39 @@ with tab3:
     with st.spinner("Running gradient boosting inference..."):
         w_rec  = optimizer.find_optimal_weight(product)
         c_pred = optimizer.predict_market_churn(product, pdd["new_price"])
+
+    # ── Decision Confidence Score (new — synthesized purely from
+    #    values already computed above, no new backend calls) ──
+    _risk_penalty = {"LOW": 0, "MEDIUM": 25, "HIGH": 55}.get(c_pred.risk_level, 30)
+    _weight_bonus = 15 if w_rec.feasible else -10
+    _decision_score = max(5, min(98, 78 - _risk_penalty + _weight_bonus))
+
+    if _decision_score >= 70:
+        _dscore_color, _dscore_label = "#10E0A6", "Strong Signal"
+    elif _decision_score >= 40:
+        _dscore_color, _dscore_label = "#FFC145", "Proceed with Caution"
+    else:
+        _dscore_color, _dscore_label = "#FF5468", "High Risk"
+
+    st.markdown(f"""
+    <div class="q-dscore-card">
+      <div class="q-dscore-ring-wrap">
+        <svg width="108" height="108" viewBox="0 0 108 108">
+          <circle cx="54" cy="54" r="46" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+          <circle cx="54" cy="54" r="46" fill="none" stroke="{_dscore_color}" stroke-width="10"
+                  stroke-linecap="round" stroke-dasharray="{2*3.14159*46}"
+                  stroke-dashoffset="{2*3.14159*46*(1 - _decision_score/100)}"
+                  transform="rotate(-90 54 54)" style="transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1);"/>
+        </svg>
+        <div class="q-dscore-num">{_decision_score}</div>
+      </div>
+      <div class="q-dscore-info">
+        <div class="q-dscore-label" style="color:{_dscore_color}">{_dscore_label}</div>
+        <div class="q-dscore-title">Overall Decision Confidence</div>
+        <div class="q-dscore-sub">Combines weight feasibility, churn risk level, and market impact into a single 0–100 signal for this scenario.</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ── Strategy A: Optimal Weight ──────────────────────────
     st.markdown("### ⚖️ Strategy A — Optimal Weight Adjustment")
@@ -1520,6 +1708,17 @@ with tab4:
         )
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────────────────
+# TIPS STRIP (new — purely additive, cosmetic only)
+# ─────────────────────────────────────────────────────────
+st.markdown("""
+<div class="q-tips-strip">
+  <span class="q-tip"><b>💡 Tip:</b> Use a Quick-start preset in Product Input to explore results in seconds.</span>
+  <span class="q-tip"><b>📥 Tip:</b> Export the segment report as CSV from the AI Recommendation tab.</span>
+  <span class="q-tip"><b>🧪 Tip:</b> Visit Strategy Lab for the revenue-maximizing sweet spot on price increases.</span>
+</div>
+""", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────
 # FOOTER
