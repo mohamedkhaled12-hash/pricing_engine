@@ -35,28 +35,29 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ═══════════════════════════════════════
-   TOKENS  (refreshed palette — richer voids,
-   more saturated accents, warmer neutrals.
-   Variable NAMES are unchanged so every rule
-   that references them below still works.)
+   TOKENS  (v3 palette — deep obsidian voids,
+   jewel-tone accents with more presence,
+   warmer high-contrast neutrals for legibility.
+   Variable NAMES unchanged — every downstream
+   rule keeps working automatically.)
 ═══════════════════════════════════════ */
 :root {
-  --void:     #05070E;
-  --surface:  #0F131C;
-  --raised:   #1A2030;
-  --border:   rgba(255,255,255,0.07);
-  --border-2: rgba(255,255,255,0.12);
-  --iris:     #8B5CF6;
-  --iris-2:   #A78BFA;
-  --iris-glow:rgba(139,92,246,0.38);
-  --jade:     #10E0A6;
-  --jade-glow:rgba(16,224,166,0.28);
-  --crimson:  #FF5468;
-  --crim-glow:rgba(255,84,104,0.28);
-  --amber:    #FFC145;
-  --snow:     #F8FAFC;
-  --mist:     #9BA8C4;
-  --dim:      #576079;
+  --void:     #030509;
+  --surface:  #10141F;
+  --raised:   #1C2333;
+  --border:   rgba(255,255,255,0.08);
+  --border-2: rgba(255,255,255,0.14);
+  --iris:     #9333EA;
+  --iris-2:   #B794F6;
+  --iris-glow:rgba(147,51,234,0.42);
+  --jade:     #14F1B2;
+  --jade-glow:rgba(20,241,178,0.30);
+  --crimson:  #FF6B7A;
+  --crim-glow:rgba(255,107,122,0.30);
+  --amber:    #FFD166;
+  --snow:     #FAFBFF;
+  --mist:     #A6B3D1;
+  --dim:      #626C89;
   --r-sm:     8px;
   --r-md:     14px;
   --r-lg:     20px;
@@ -152,7 +153,7 @@ html, body,
 }
 @keyframes live { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 .chip-iris { background: linear-gradient(135deg,var(--iris),var(--iris-2)); color:#fff; box-shadow:0 2px 12px var(--iris-glow); }
-.chip-amber { background:rgba(255,176,32,0.12); border:1px solid rgba(255,176,32,0.2); color:var(--amber); }
+.chip-amber { background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.22); color:var(--amber); }
 
 /* ═══════════════════════════════════════
    TICKER
@@ -228,7 +229,7 @@ html, body,
   margin-bottom: 18px; max-width: 700px; position: relative;
 }
 .q-hero-h1-accent {
-  background: linear-gradient(135deg,var(--iris-2) 0%,#A78BFA 50%,var(--jade) 100%);
+  background: linear-gradient(135deg,var(--iris-2) 0%,#B794F6 50%,var(--jade) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .q-hero-sub {
@@ -242,8 +243,8 @@ html, body,
   font-family: 'Space Grotesk', sans-serif;
   font-size: 40px; font-weight: 700; letter-spacing: -2px; line-height: 1;
 }
-.q-hero-stat-val.iris { background:linear-gradient(135deg,var(--iris-2),#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.q-hero-stat-val.jade { background:linear-gradient(135deg,var(--jade),#34D399); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.q-hero-stat-val.iris { background:linear-gradient(135deg,var(--iris-2),#B794F6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.q-hero-stat-val.jade { background:linear-gradient(135deg,var(--jade),#5EEAC4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .q-hero-stat-val.white { background:linear-gradient(135deg,#fff 60%,rgba(255,255,255,0.5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .q-hero-stat-label { font-size: 11px; font-weight: 500; color: var(--dim); margin-top: 6px; }
 
@@ -276,19 +277,19 @@ html, body,
 }
 .q-kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:var(--r-lg) var(--r-lg) 0 0; }
 .kpi-iris::before  { background:linear-gradient(90deg,var(--iris),var(--iris-2)); }
-.kpi-jade::before  { background:linear-gradient(90deg,var(--jade),#34D399); }
-.kpi-crim::before  { background:linear-gradient(90deg,var(--crimson),#FF6B78); }
-.kpi-amber::before { background:linear-gradient(90deg,var(--amber),#FCD34D); }
+.kpi-jade::before  { background:linear-gradient(90deg,var(--jade),#5EEAC4); }
+.kpi-crim::before  { background:linear-gradient(90deg,var(--crimson),#FF8A96); }
+.kpi-amber::before { background:linear-gradient(90deg,var(--amber),#FFE29A); }
 .q-kpi:hover { transform: translateY(-4px); }
 .kpi-iris:hover  { border-color:rgba(124,58,237,0.35); box-shadow:0 18px 50px rgba(124,58,237,0.10); }
 .kpi-jade:hover  { border-color:rgba(6,214,160,0.28);  box-shadow:0 18px 50px rgba(6,214,160,0.07); }
 .kpi-crim:hover  { border-color:rgba(255,71,87,0.28);   box-shadow:0 18px 50px rgba(255,71,87,0.07); }
-.kpi-amber:hover { border-color:rgba(255,176,32,0.28);  box-shadow:0 18px 50px rgba(255,176,32,0.07); }
+.kpi-amber:hover { border-color:rgba(255,209,102,0.28);  box-shadow:0 18px 50px rgba(255,209,102,0.07); }
 .q-kpi-glow { position:absolute; top:-50px; right:-50px; width:140px; height:140px; border-radius:50%; opacity:0.5; pointer-events:none; transition:opacity .3s; }
 .kpi-iris  .q-kpi-glow { background:radial-gradient(circle,rgba(124,58,237,0.18) 0%,transparent 70%); }
 .kpi-jade  .q-kpi-glow { background:radial-gradient(circle,rgba(6,214,160,0.14) 0%,transparent 70%); }
 .kpi-crim  .q-kpi-glow { background:radial-gradient(circle,rgba(255,71,87,0.14) 0%,transparent 70%); }
-.kpi-amber .q-kpi-glow { background:radial-gradient(circle,rgba(255,176,32,0.14) 0%,transparent 70%); }
+.kpi-amber .q-kpi-glow { background:radial-gradient(circle,rgba(255,209,102,0.14) 0%,transparent 70%); }
 .q-kpi:hover .q-kpi-glow { opacity:1; }
 .q-kpi-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
 .q-kpi-label { font-size:10px; font-weight:600; color:var(--dim); line-height:1.45; max-width:110px; }
@@ -296,13 +297,13 @@ html, body,
 .ico-iris  { background:rgba(124,58,237,0.14); }
 .ico-jade  { background:rgba(6,214,160,0.11); }
 .ico-crim  { background:rgba(255,71,87,0.11); }
-.ico-amber { background:rgba(255,176,32,0.11); }
+.ico-amber { background:rgba(255,209,102,0.11); }
 .q-kpi-val { font-family:'Space Grotesk',sans-serif; font-size:30px; font-weight:700; color:var(--snow); letter-spacing:-1.5px; line-height:1; margin-bottom:8px; }
 .q-kpi-delta { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; }
 .d-iris  { background:rgba(124,58,237,0.12); color:var(--iris-2); }
 .d-jade  { background:rgba(6,214,160,0.10);  color:var(--jade); }
 .d-crim  { background:rgba(255,71,87,0.10);  color:var(--crimson); }
-.d-amber { background:rgba(255,176,32,0.10); color:var(--amber); }
+.d-amber { background:rgba(255,209,102,0.10); color:var(--amber); }
 .q-kpi-bar { height:2px; background:var(--raised); border-radius:100px; margin-top:12px; overflow:hidden; }
 .q-kpi-fill { height:100%; border-radius:100px; }
 
@@ -339,7 +340,7 @@ html, body,
 .call-iris  { background:rgba(124,58,237,0.06); border-color:rgba(124,58,237,0.2); color:#C4B5FD; }
 .call-jade  { background:rgba(6,214,160,0.05);  border-color:rgba(6,214,160,0.2);  color:#6EE7C7; }
 .call-crim  { background:rgba(255,71,87,0.06);   border-color:rgba(255,71,87,0.2);   color:#FCA5A5; }
-.call-amber { background:rgba(255,176,32,0.06);  border-color:rgba(255,176,32,0.2);  color:#FCD34D; }
+.call-amber { background:rgba(255,209,102,0.07);  border-color:rgba(255,209,102,0.22);  color:#FFE29A; }
 .call-ico   { font-size:15px; flex-shrink:0; margin-top:1px; }
 
 /* ═══════════════════════════════════════
@@ -456,7 +457,10 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
   letter-spacing:1.2px; text-transform:uppercase; transition:all .2s var(--ease); cursor:default;
 }
 .q-footer-pill:hover { border-color:var(--iris); color:var(--iris-2); }
-.q-div { height:1px; background:var(--border); margin:28px 0; }
+.q-div {
+  height: 1px; margin: 28px 0;
+  background: linear-gradient(90deg, transparent 0%, var(--border-2) 15%, var(--border-2) 85%, transparent 100%);
+}
 
 /* ═══════════════════════════════════════
    STATUS STRIP (new — purely additive)
@@ -690,7 +694,7 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 .q-hero-logo-block { display:flex; flex-direction:column; align-items:center; gap:14px; flex-shrink:0; }
 .q-hero-logo-mark {
   width:130px; height:130px;
-  background:linear-gradient(135deg,#8B5CF6,#A78BFA);
+  background:linear-gradient(135deg,#9333EA,#B794F6);
   border-radius:32px; display:flex; align-items:center; justify-content:center;
   font-size:64px;
   box-shadow:0 0 60px rgba(124,58,237,0.45),0 0 120px rgba(124,58,237,0.15);
@@ -698,7 +702,7 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 }
 @keyframes logo-float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
 .q-hero-logo-name { font-family:'Space Grotesk',sans-serif; font-size:42px; font-weight:700; color:#F8FAFC; letter-spacing:-1.5px; line-height:1; }
-.q-hero-logo-name b { color:#A78BFA; }
+.q-hero-logo-name b { color:#B794F6; }
 .q-hero-logo-tag { font-size:11px; font-weight:600; color:#4A5568; letter-spacing:2px; text-transform:uppercase; }
 @media (max-width:768px) { .q-hero-logo-block { display:none; } }
 </style>
@@ -764,10 +768,10 @@ TICKS = [
     ("Real Purchasing Power",   "40.5%"),
     ("Food Budget (Urban)",     "28.63%"),
     ("Income Median 2026",      "138,739 EGP"),
-    ("Model AUC Score",         "0.74"),
+    ("Model AUC Score",         "0.80"),
     ("Rural Inflation",         "2.53×"),
     ("Rural Purchasing Power",  "39.49%"),
-    ("Training Scenarios",      "24,480"),
+    ("Training Scenarios",      "15,840"),
     ("Food Budget (Rural)",     "36.39%"),
     ("Income Brackets",         "9 analysed"),
 ]
@@ -816,11 +820,11 @@ st.markdown("""
           <div class="q-hero-stat-label">Real Purchasing Power</div>
         </div>
         <div class="q-hero-stat">
-          <div class="q-hero-stat-val white">24K</div>
+          <div class="q-hero-stat-val white">15.8K</div>
           <div class="q-hero-stat-label">Training Scenarios</div>
         </div>
         <div class="q-hero-stat">
-          <div class="q-hero-stat-val iris">0.74</div>
+          <div class="q-hero-stat-val iris">0.80</div>
           <div class="q-hero-stat-label">Model AUC Score</div>
         </div>
       </div>
@@ -916,7 +920,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val"><span class="q-count" data-target="138" data-suffix="K">0</span> <span style="font-size:14px;color:var(--dim)">EGP</span></div>
     <div class="q-kpi-delta d-iris">▲ +146.8% nominal shift</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="65" style="width:0%;background:linear-gradient(90deg,#8B5CF6,#A78BFA)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="65" style="width:0%;background:linear-gradient(90deg,#9333EA,#B794F6)"></div></div>
   </div>
   <div class="q-kpi kpi-jade">
     <div class="q-kpi-glow"></div>
@@ -926,7 +930,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val"><span class="q-count" data-target="40.5" data-decimals="1">0</span><span style="font-size:18px;color:var(--dim)">%</span></div>
     <div class="q-kpi-delta d-crim">▼ vs nominal income</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="40" style="width:0%;background:linear-gradient(90deg,#10E0A6,#34D399)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="40" style="width:0%;background:linear-gradient(90deg,#14F1B2,#5EEAC4)"></div></div>
   </div>
   <div class="q-kpi kpi-crim">
     <div class="q-kpi-glow"></div>
@@ -934,9 +938,9 @@ st.markdown("""
       <div class="q-kpi-label">Churn Model AUC Score</div>
       <div class="q-kpi-icon ico-crim">🤖</div>
     </div>
-    <div class="q-kpi-val"><span class="q-count" data-target="0.74" data-decimals="2">0</span></div>
+    <div class="q-kpi-val"><span class="q-count" data-target="0.80" data-decimals="2">0</span></div>
     <div class="q-kpi-delta d-iris">5-fold cross-validation</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="74" style="width:0%;background:linear-gradient(90deg,#FF5468,#FF6B78)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="74" style="width:0%;background:linear-gradient(90deg,#FF6B7A,#FF8A96)"></div></div>
   </div>
   <div class="q-kpi kpi-amber">
     <div class="q-kpi-glow"></div>
@@ -946,7 +950,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val"><span class="q-count" data-target="24480" data-format="comma">0</span></div>
     <div class="q-kpi-delta d-amber">economic simulations</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="88" style="width:0%;background:linear-gradient(90deg,#FFC145,#FCD34D)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill q-anim-bar" data-width="88" style="width:0%;background:linear-gradient(90deg,#FFD166,#FFE29A)"></div></div>
   </div>
 </div>
 
@@ -1004,7 +1008,7 @@ st.markdown(f"""
   <div class="q-status-item">
     <span class="q-status-icon">🧠</span>
     <span class="q-status-label">Model</span>
-    <span class="q-status-value">GradientBoosting · AUC 0.74</span>
+    <span class="q-status-value">GradientBoosting · AUC 0.80</span>
   </div>
   <div class="q-status-divider"></div>
   <div class="q-status-item">
@@ -1053,20 +1057,20 @@ with tab1:
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=x, y=p20, fill="tozeroy", fillcolor="rgba(124,58,237,0.08)",
-        line=dict(color="#8B5CF6", width=2.5), name="2020 Distribution",
+        line=dict(color="#9333EA", width=2.5), name="2020 Distribution",
         hovertemplate="<b>Income:</b> %{x:,.0f} EGP<extra>2020</extra>",
     ))
     fig.add_trace(go.Scatter(
         x=x, y=p26, fill="tozeroy", fillcolor="rgba(255,71,87,0.07)",
-        line=dict(color="#FF5468", width=2.5), name="2026 Distribution",
+        line=dict(color="#FF6B7A", width=2.5), name="2026 Distribution",
         hovertemplate="<b>Income:</b> %{x:,.0f} EGP<extra>2026</extra>",
     ))
-    fig.add_vline(x=data["median_2020"], line_dash="dot", line_color="#8B5CF6", line_width=1.5,
+    fig.add_vline(x=data["median_2020"], line_dash="dot", line_color="#9333EA", line_width=1.5,
                   annotation_text=f" 2020 Median  {data['median_2020']:,.0f} EGP",
-                  annotation_font_size=11, annotation_font_color="#A78BFA")
-    fig.add_vline(x=data["median_2026"], line_dash="dot", line_color="#FF5468", line_width=1.5,
+                  annotation_font_size=11, annotation_font_color="#B794F6")
+    fig.add_vline(x=data["median_2026"], line_dash="dot", line_color="#FF6B7A", line_width=1.5,
                   annotation_text=f" 2026 Median  {data['median_2026']:,.0f} EGP",
-                  annotation_font_size=11, annotation_font_color="#FF6B78")
+                  annotation_font_size=11, annotation_font_color="#FF8A96")
     fig.update_layout(
         **chart(
             height=420, hovermode="x unified",
@@ -1127,7 +1131,7 @@ with tab2:
     )
     _preset = PRESETS[preset_choice]
 
-    st.markdown('<div class="q-div" style="margin:14px 0"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="q-div"></div>', unsafe_allow_html=True)
 
     with st.form("product_form"):
         c1, c2 = st.columns(2, gap="large")
@@ -1192,16 +1196,16 @@ with tab2:
         fig_aff = go.Figure(go.Bar(
             x=sdf["bracket"], y=sdf["price_burden_pct"],
             marker=dict(
-                color=["#10E0A6" if r else "#FF5468" for r in sdf["affordable"]],
+                color=["#14F1B2" if r else "#FF6B7A" for r in sdf["affordable"]],
                 opacity=0.82, line=dict(width=0),
             ),
             text=[f"{v:.1f}%" for v in sdf["price_burden_pct"]],
             textposition="outside", textfont=dict(family="Inter", size=11, color="#8B9AB3"),
             hovertemplate="<b>%{x}</b><br>Burden: <b>%{y:.1f}%</b><extra></extra>",
         ))
-        fig_aff.add_hline(y=15, line_dash="dot", line_color="#FFC145", line_width=2,
+        fig_aff.add_hline(y=15, line_dash="dot", line_color="#FFD166", line_width=2,
                           annotation_text="Affordability threshold 15%",
-                          annotation_font_color="#FFC145", annotation_font_size=11)
+                          annotation_font_color="#FFD166", annotation_font_size=11)
         fig_aff.update_layout(**chart(
             height=300,
             xaxis=dict(**CHART["xaxis"], tickangle=-30),
@@ -1255,11 +1259,11 @@ with tab3:
     _decision_score = max(5, min(98, 78 - _risk_penalty + _weight_bonus))
 
     if _decision_score >= 70:
-        _dscore_color, _dscore_label = "#10E0A6", "Strong Signal"
+        _dscore_color, _dscore_label = "#14F1B2", "Strong Signal"
     elif _decision_score >= 40:
-        _dscore_color, _dscore_label = "#FFC145", "Proceed with Caution"
+        _dscore_color, _dscore_label = "#FFD166", "Proceed with Caution"
     else:
-        _dscore_color, _dscore_label = "#FF5468", "High Risk"
+        _dscore_color, _dscore_label = "#FF6B7A", "High Risk"
 
     st.markdown(f"""
     <div class="q-dscore-card">
@@ -1375,7 +1379,7 @@ with tab3:
             x=b_short,
             y=sdf2["price_burden_pct"],
             marker=dict(
-                color=["#FF5468" if r else "#10E0A6" for r in sdf2["at_risk"]],
+                color=["#FF6B7A" if r else "#14F1B2" for r in sdf2["at_risk"]],
                 opacity=0.88, line=dict(width=0),
             ),
             text=["🔴 غالي" if r else "✅ مناسب" for r in sdf2["at_risk"]],
@@ -1384,8 +1388,8 @@ with tab3:
             hovertemplate="<b>%{x}</b><br>عبء السعر: %{y:.1f}%<extra></extra>",
         ))
         fig1.add_hline(
-            y=15, line_dash="dot", line_color="#FFC145", line_width=2,
-            annotation_text="حد المقاطعة", annotation_font_color="#FFC145",
+            y=15, line_dash="dot", line_color="#FFD166", line_width=2,
+            annotation_text="حد المقاطعة", annotation_font_color="#FFD166",
             annotation_font_size=11,
         )
         fig1.update_layout(**chart(
@@ -1407,11 +1411,11 @@ with tab3:
         bar_colors = []
         for p in ml_probs:
             if p >= 50:
-                bar_colors.append("#FF5468")
+                bar_colors.append("#FF6B7A")
             elif p >= 25:
-                bar_colors.append("#FFC145")
+                bar_colors.append("#FFD166")
             else:
-                bar_colors.append("#10E0A6")
+                bar_colors.append("#14F1B2")
 
         fig2 = go.Figure(go.Bar(
             x=b_short,
@@ -1438,7 +1442,7 @@ with tab3:
             unsafe_allow_html=True,
         )
         pop_vals = [round(v * 100, 2) for v in sdf2["population_pct"]]
-        pie_colors = ["#FF5468" if r else "#8B5CF6" for r in sdf2["at_risk"]]
+        pie_colors = ["#FF6B7A" if r else "#9333EA" for r in sdf2["at_risk"]]
         fig3 = go.Figure(go.Pie(
             labels=b_short,
             values=pop_vals,
@@ -1547,7 +1551,7 @@ with tab4:
             x=score_df["Bracket"], y=score_df["Composite"],
             marker=dict(
                 color=score_df["Composite"],
-                colorscale=[[0, "#FF5468"], [0.5, "#FFC145"], [1, "#10E0A6"]],
+                colorscale=[[0, "#FF6B7A"], [0.5, "#FFD166"], [1, "#14F1B2"]],
                 cmin=0, cmax=100, line=dict(width=0),
             ),
             text=[f"{v:.0f}" for v in score_df["Composite"]],
@@ -1602,22 +1606,22 @@ with tab4:
         fig_curve.add_trace(go.Scatter(
             x=curve_df["price_increase_pct"], y=curve_df["churn_pct"],
             mode="lines+markers", name="Predicted Churn %",
-            line=dict(color="#FF5468", width=2.5),
-            marker=dict(size=6, color="#FF5468"),
+            line=dict(color="#FF6B7A", width=2.5),
+            marker=dict(size=6, color="#FF6B7A"),
             hovertemplate="+%{x:.0f}%% price<br>Churn: %{y:.1f}%<extra></extra>",
         ))
         fig_curve.add_trace(go.Scatter(
             x=curve_df["price_increase_pct"], y=curve_df["revenue_index"],
             mode="lines+markers", name="Revenue Index (100=baseline)",
-            line=dict(color="#A78BFA", width=2.5),
-            marker=dict(size=6, color="#A78BFA"),
+            line=dict(color="#B794F6", width=2.5),
+            marker=dict(size=6, color="#B794F6"),
             yaxis="y2",
             hovertemplate="+%{x:.0f}%% price<br>Revenue Index: %{y:.1f}<extra></extra>",
         ))
         fig_curve.add_trace(go.Scatter(
             x=[sweet_row["price_increase_pct"]], y=[sweet_row["revenue_index"]],
             mode="markers", name="Sweet Spot",
-            marker=dict(size=16, color="#FFC145", symbol="star",
+            marker=dict(size=16, color="#FFD166", symbol="star",
                         line=dict(color="#F8FAFC", width=1)),
             yaxis="y2",
             hovertemplate=f"<b>Sweet spot: +{sweet_row['price_increase_pct']:.0f}%%</b><br>"
@@ -1631,10 +1635,10 @@ with tab4:
                        tickfont=dict(family="Inter", size=11, color="#4A5568")),
             yaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
                        zeroline=False, title="Churn %",
-                       title_font=dict(family="Inter", size=12, color="#FF6B78"),
+                       title_font=dict(family="Inter", size=12, color="#FF8A96"),
                        tickfont=dict(family="Inter", size=11, color="#4A5568")),
             yaxis2=dict(overlaying="y", side="right", gridcolor="rgba(0,0,0,0)",
-                        title="Revenue Index", title_font=dict(family="Inter", size=12, color="#A78BFA"),
+                        title="Revenue Index", title_font=dict(family="Inter", size=12, color="#B794F6"),
                         tickfont=dict(family="Inter", size=11, color="#4A5568")),
             legend=dict(bgcolor="rgba(13,17,23,0.88)", bordercolor="rgba(255,255,255,0.08)",
                         borderwidth=1, font=dict(family="Inter", size=11, color="#8B9AB3"),
@@ -1738,7 +1742,7 @@ st.markdown("""
     <span class="q-footer-pill">Log-Normal</span>
     <span class="q-footer-pill">Gradient Boosting</span>
     <span class="q-footer-pill">Open Source</span>
-    <span class="q-footer-pill">AUC 0.74</span>
+    <span class="q-footer-pill">AUC 0.80</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
