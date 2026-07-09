@@ -35,25 +35,28 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ═══════════════════════════════════════
-   TOKENS
+   TOKENS  (refreshed palette — richer voids,
+   more saturated accents, warmer neutrals.
+   Variable NAMES are unchanged so every rule
+   that references them below still works.)
 ═══════════════════════════════════════ */
 :root {
-  --void:     #060912;
-  --surface:  #0D1117;
-  --raised:   #161B27;
-  --border:   rgba(255,255,255,0.06);
-  --border-2: rgba(255,255,255,0.10);
-  --iris:     #7C3AED;
-  --iris-2:   #9D5FF5;
-  --iris-glow:rgba(124,58,237,0.35);
-  --jade:     #06D6A0;
-  --jade-glow:rgba(6,214,160,0.25);
-  --crimson:  #FF4757;
-  --crim-glow:rgba(255,71,87,0.25);
-  --amber:    #FFB020;
+  --void:     #05070E;
+  --surface:  #0F131C;
+  --raised:   #1A2030;
+  --border:   rgba(255,255,255,0.07);
+  --border-2: rgba(255,255,255,0.12);
+  --iris:     #8B5CF6;
+  --iris-2:   #A78BFA;
+  --iris-glow:rgba(139,92,246,0.38);
+  --jade:     #10E0A6;
+  --jade-glow:rgba(16,224,166,0.28);
+  --crimson:  #FF5468;
+  --crim-glow:rgba(255,84,104,0.28);
+  --amber:    #FFC145;
   --snow:     #F8FAFC;
-  --mist:     #8B9AB3;
-  --dim:      #4A5568;
+  --mist:     #9BA8C4;
+  --dim:      #576079;
   --r-sm:     8px;
   --r-md:     14px;
   --r-lg:     20px;
@@ -609,6 +612,27 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
   .q-hero-stat-val { font-size: 32px; }
   .stTabs [data-baseweb="tab"] { font-size: 10px !important; padding: 7px 8px !important; }
 }
+
+/* ═══════════════════════════════════════
+   HERO LOGO BLOCK (moved here from a separate
+   inline <style> tag — that extra tag was
+   rendering as a visible empty block in some
+   Streamlit versions, causing a large gap)
+═══════════════════════════════════════ */
+.q-hero-logo-block { display:flex; flex-direction:column; align-items:center; gap:14px; flex-shrink:0; }
+.q-hero-logo-mark {
+  width:130px; height:130px;
+  background:linear-gradient(135deg,#8B5CF6,#A78BFA);
+  border-radius:32px; display:flex; align-items:center; justify-content:center;
+  font-size:64px;
+  box-shadow:0 0 60px rgba(124,58,237,0.45),0 0 120px rgba(124,58,237,0.15);
+  animation:logo-float 4s ease-in-out infinite;
+}
+@keyframes logo-float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+.q-hero-logo-name { font-family:'Space Grotesk',sans-serif; font-size:42px; font-weight:700; color:#F8FAFC; letter-spacing:-1.5px; line-height:1; }
+.q-hero-logo-name b { color:#A78BFA; }
+.q-hero-logo-tag { font-size:11px; font-weight:600; color:#4A5568; letter-spacing:2px; text-transform:uppercase; }
+@media (max-width:768px) { .q-hero-logo-block { display:none; } }
 </style>
 """, unsafe_allow_html=True)
 
@@ -695,16 +719,6 @@ st.markdown(f"""
 # HERO
 # ─────────────────────────────────────────────────────────
 st.markdown("""
-<style>
-.q-hero-logo-block{display:flex;flex-direction:column;align-items:center;gap:14px;flex-shrink:0;}
-.q-hero-logo-mark{width:130px;height:130px;background:linear-gradient(135deg,#7C3AED,#9D5FF5);border-radius:32px;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 60px rgba(124,58,237,0.45),0 0 120px rgba(124,58,237,0.15);animation:logo-float 4s ease-in-out infinite;}
-@keyframes logo-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.q-hero-logo-name{font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:#F8FAFC;letter-spacing:-1.5px;line-height:1;}
-.q-hero-logo-name b{color:#9D5FF5;}
-.q-hero-logo-tag{font-size:11px;font-weight:600;color:#4A5568;letter-spacing:2px;text-transform:uppercase;}
-@media(max-width:768px){.q-hero-logo-block{display:none;}}
-</style>
-
 <div class="q-hero">
   <div class="q-hero-bg">
     <div class="q-hero-grid"></div>
@@ -834,7 +848,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val">138K <span style="font-size:14px;color:var(--dim)">EGP</span></div>
     <div class="q-kpi-delta d-iris">▲ +146.8% nominal shift</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:65%;background:linear-gradient(90deg,#7C3AED,#9D5FF5)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:65%;background:linear-gradient(90deg,#8B5CF6,#A78BFA)"></div></div>
   </div>
   <div class="q-kpi kpi-jade">
     <div class="q-kpi-glow"></div>
@@ -844,7 +858,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val">40.5<span style="font-size:18px;color:var(--dim)">%</span></div>
     <div class="q-kpi-delta d-crim">▼ vs nominal income</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:40%;background:linear-gradient(90deg,#06D6A0,#34D399)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:40%;background:linear-gradient(90deg,#10E0A6,#34D399)"></div></div>
   </div>
   <div class="q-kpi kpi-crim">
     <div class="q-kpi-glow"></div>
@@ -854,7 +868,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val">0.74</div>
     <div class="q-kpi-delta d-iris">5-fold cross-validation</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:74%;background:linear-gradient(90deg,#FF4757,#FF6B78)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:74%;background:linear-gradient(90deg,#FF5468,#FF6B78)"></div></div>
   </div>
   <div class="q-kpi kpi-amber">
     <div class="q-kpi-glow"></div>
@@ -864,7 +878,7 @@ st.markdown("""
     </div>
     <div class="q-kpi-val">24,480</div>
     <div class="q-kpi-delta d-amber">economic simulations</div>
-    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:88%;background:linear-gradient(90deg,#FFB020,#FCD34D)"></div></div>
+    <div class="q-kpi-bar"><div class="q-kpi-fill" style="width:88%;background:linear-gradient(90deg,#FFC145,#FCD34D)"></div></div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -901,18 +915,18 @@ with tab1:
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=x, y=p20, fill="tozeroy", fillcolor="rgba(124,58,237,0.08)",
-        line=dict(color="#7C3AED", width=2.5), name="2020 Distribution",
+        line=dict(color="#8B5CF6", width=2.5), name="2020 Distribution",
         hovertemplate="<b>Income:</b> %{x:,.0f} EGP<extra>2020</extra>",
     ))
     fig.add_trace(go.Scatter(
         x=x, y=p26, fill="tozeroy", fillcolor="rgba(255,71,87,0.07)",
-        line=dict(color="#FF4757", width=2.5), name="2026 Distribution",
+        line=dict(color="#FF5468", width=2.5), name="2026 Distribution",
         hovertemplate="<b>Income:</b> %{x:,.0f} EGP<extra>2026</extra>",
     ))
-    fig.add_vline(x=data["median_2020"], line_dash="dot", line_color="#7C3AED", line_width=1.5,
+    fig.add_vline(x=data["median_2020"], line_dash="dot", line_color="#8B5CF6", line_width=1.5,
                   annotation_text=f" 2020 Median  {data['median_2020']:,.0f} EGP",
-                  annotation_font_size=11, annotation_font_color="#9D5FF5")
-    fig.add_vline(x=data["median_2026"], line_dash="dot", line_color="#FF4757", line_width=1.5,
+                  annotation_font_size=11, annotation_font_color="#A78BFA")
+    fig.add_vline(x=data["median_2026"], line_dash="dot", line_color="#FF5468", line_width=1.5,
                   annotation_text=f" 2026 Median  {data['median_2026']:,.0f} EGP",
                   annotation_font_size=11, annotation_font_color="#FF6B78")
     fig.update_layout(
@@ -1023,16 +1037,16 @@ with tab2:
         fig_aff = go.Figure(go.Bar(
             x=sdf["bracket"], y=sdf["price_burden_pct"],
             marker=dict(
-                color=["#06D6A0" if r else "#FF4757" for r in sdf["affordable"]],
+                color=["#10E0A6" if r else "#FF5468" for r in sdf["affordable"]],
                 opacity=0.82, line=dict(width=0),
             ),
             text=[f"{v:.1f}%" for v in sdf["price_burden_pct"]],
             textposition="outside", textfont=dict(family="Inter", size=11, color="#8B9AB3"),
             hovertemplate="<b>%{x}</b><br>Burden: <b>%{y:.1f}%</b><extra></extra>",
         ))
-        fig_aff.add_hline(y=15, line_dash="dot", line_color="#FFB020", line_width=2,
+        fig_aff.add_hline(y=15, line_dash="dot", line_color="#FFC145", line_width=2,
                           annotation_text="Affordability threshold 15%",
-                          annotation_font_color="#FFB020", annotation_font_size=11)
+                          annotation_font_color="#FFC145", annotation_font_size=11)
         fig_aff.update_layout(**chart(
             height=300,
             xaxis=dict(**CHART["xaxis"], tickangle=-30),
@@ -1173,7 +1187,7 @@ with tab3:
             x=b_short,
             y=sdf2["price_burden_pct"],
             marker=dict(
-                color=["#FF4757" if r else "#06D6A0" for r in sdf2["at_risk"]],
+                color=["#FF5468" if r else "#10E0A6" for r in sdf2["at_risk"]],
                 opacity=0.88, line=dict(width=0),
             ),
             text=["🔴 غالي" if r else "✅ مناسب" for r in sdf2["at_risk"]],
@@ -1182,8 +1196,8 @@ with tab3:
             hovertemplate="<b>%{x}</b><br>عبء السعر: %{y:.1f}%<extra></extra>",
         ))
         fig1.add_hline(
-            y=15, line_dash="dot", line_color="#FFB020", line_width=2,
-            annotation_text="حد المقاطعة", annotation_font_color="#FFB020",
+            y=15, line_dash="dot", line_color="#FFC145", line_width=2,
+            annotation_text="حد المقاطعة", annotation_font_color="#FFC145",
             annotation_font_size=11,
         )
         fig1.update_layout(**chart(
@@ -1205,11 +1219,11 @@ with tab3:
         bar_colors = []
         for p in ml_probs:
             if p >= 50:
-                bar_colors.append("#FF4757")
+                bar_colors.append("#FF5468")
             elif p >= 25:
-                bar_colors.append("#FFB020")
+                bar_colors.append("#FFC145")
             else:
-                bar_colors.append("#06D6A0")
+                bar_colors.append("#10E0A6")
 
         fig2 = go.Figure(go.Bar(
             x=b_short,
@@ -1236,7 +1250,7 @@ with tab3:
             unsafe_allow_html=True,
         )
         pop_vals = [round(v * 100, 2) for v in sdf2["population_pct"]]
-        pie_colors = ["#FF4757" if r else "#7C3AED" for r in sdf2["at_risk"]]
+        pie_colors = ["#FF5468" if r else "#8B5CF6" for r in sdf2["at_risk"]]
         fig3 = go.Figure(go.Pie(
             labels=b_short,
             values=pop_vals,
@@ -1345,7 +1359,7 @@ with tab4:
             x=score_df["Bracket"], y=score_df["Composite"],
             marker=dict(
                 color=score_df["Composite"],
-                colorscale=[[0, "#FF4757"], [0.5, "#FFB020"], [1, "#06D6A0"]],
+                colorscale=[[0, "#FF5468"], [0.5, "#FFC145"], [1, "#10E0A6"]],
                 cmin=0, cmax=100, line=dict(width=0),
             ),
             text=[f"{v:.0f}" for v in score_df["Composite"]],
@@ -1400,22 +1414,22 @@ with tab4:
         fig_curve.add_trace(go.Scatter(
             x=curve_df["price_increase_pct"], y=curve_df["churn_pct"],
             mode="lines+markers", name="Predicted Churn %",
-            line=dict(color="#FF4757", width=2.5),
-            marker=dict(size=6, color="#FF4757"),
+            line=dict(color="#FF5468", width=2.5),
+            marker=dict(size=6, color="#FF5468"),
             hovertemplate="+%{x:.0f}%% price<br>Churn: %{y:.1f}%<extra></extra>",
         ))
         fig_curve.add_trace(go.Scatter(
             x=curve_df["price_increase_pct"], y=curve_df["revenue_index"],
             mode="lines+markers", name="Revenue Index (100=baseline)",
-            line=dict(color="#9D5FF5", width=2.5),
-            marker=dict(size=6, color="#9D5FF5"),
+            line=dict(color="#A78BFA", width=2.5),
+            marker=dict(size=6, color="#A78BFA"),
             yaxis="y2",
             hovertemplate="+%{x:.0f}%% price<br>Revenue Index: %{y:.1f}<extra></extra>",
         ))
         fig_curve.add_trace(go.Scatter(
             x=[sweet_row["price_increase_pct"]], y=[sweet_row["revenue_index"]],
             mode="markers", name="Sweet Spot",
-            marker=dict(size=16, color="#FFB020", symbol="star",
+            marker=dict(size=16, color="#FFC145", symbol="star",
                         line=dict(color="#F8FAFC", width=1)),
             yaxis="y2",
             hovertemplate=f"<b>Sweet spot: +{sweet_row['price_increase_pct']:.0f}%%</b><br>"
@@ -1432,7 +1446,7 @@ with tab4:
                        title_font=dict(family="Inter", size=12, color="#FF6B78"),
                        tickfont=dict(family="Inter", size=11, color="#4A5568")),
             yaxis2=dict(overlaying="y", side="right", gridcolor="rgba(0,0,0,0)",
-                        title="Revenue Index", title_font=dict(family="Inter", size=12, color="#9D5FF5"),
+                        title="Revenue Index", title_font=dict(family="Inter", size=12, color="#A78BFA"),
                         tickfont=dict(family="Inter", size=11, color="#4A5568")),
             legend=dict(bgcolor="rgba(13,17,23,0.88)", bordercolor="rgba(255,255,255,0.08)",
                         borderwidth=1, font=dict(family="Inter", size=11, color="#8B9AB3"),
