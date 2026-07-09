@@ -718,23 +718,70 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────
-# LOAD RESOURCES
+# LOAD RESOURCES — hardened against hangs
+#
+# Strategy:
+#   1. Try to load a PRE-TRAINED model shipped in models/churn_model.pkl
+#      (this is instant — no training happens on Streamlit Cloud)
+#   2. If the file is missing or corrupted, fall back to a FAST
+#      lightweight model (a few seconds, not minutes) so the app
+#      never hangs on "Initializing AI engine..."
+#   3. If everything fails, show a clear error instead of a frozen
+#      spinner, and let the rest of the app still render.
 # ─────────────────────────────────────────────────────────
+from pathlib import Path as _Path
+import time as _time
+
+MODEL_FILE = _Path(__file__).parent.parent / "models" / "churn_model.pkl"
+
 @st.cache_resource(show_spinner=False)
 def get_optimizer():
     return PricingOptimizer()
 
 @st.cache_resource(show_spinner=False)
 def get_model():
+    """
+    load_churn_model() now handles all fallback logic internally:
+    - pretrained ensemble file present & valid -> instant load
+    - missing/corrupted -> fast lightweight fallback (seconds, not minutes)
+    This call should never take more than a few seconds.
+    """
+    from core.ml_model import load_churn_model
     return load_churn_model()
 
 @st.cache_data(show_spinner=False)
 def get_curves(area):
     return get_curve_data(area)
 
+_engine_ready  = False
+_engine_error  = None
+optimizer      = None
+model          = None
+
 with st.spinner("Initializing AI engine..."):
-    optimizer = get_optimizer()
-    model     = get_model()
+    try:
+        optimizer = get_optimizer()
+        model     = get_model()
+        _engine_ready = True
+    except Exception as e:
+        _engine_error = str(e)
+
+if not _engine_ready:
+    st.markdown(f"""
+    <div class="q-callout call-crim" style="margin:24px 44px">
+      <span class="call-ico">🚨</span>
+      <div>
+        <strong>AI engine failed to initialize.</strong><br>
+        {_engine_error or 'Unknown error'}<br><br>
+        This usually means the pretrained model file is missing or the
+        training data files are not on the server. Check that
+        <code>models/churn_model.pkl</code> and the two CSVs in
+        <code>data/</code> were committed to the repository, then use
+        <strong>Manage app → Reboot</strong> on Streamlit Cloud.
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.stop()
 
 # ─────────────────────────────────────────────────────────
 # BODY
@@ -1054,7 +1101,7 @@ with tab3:
     )
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Weighted Churn",       f"{c_pred.weighted_churn_pct}%")
+    c1.metric("Weighted Churn",       f"{c_pred.ml_weighted_churn_pct}%")
     c2.metric("At-Risk Population",   f"{c_pred.at_risk_population_pct}%")
     c3.metric("ML Churn Probability", f"{c_pred.ml_churn_prob}%")
     c4.metric("Risk Level",           c_pred.risk_level)
@@ -1064,6 +1111,14 @@ with tab3:
         f'<div><strong>Decision signal:</strong> {c_pred.recommendation}</div></div>',
         unsafe_allow_html=True,
     )
+
+    c5, c6, c7 = st.columns(3)
+    c5.metric("Break-even Price",  f"{c_pred.break_even_price} EGP",
+              help="السعر اللي هيعوض فيه انخفاض الطلب المتوقع")
+    c6.metric("Price Ceiling",     f"{c_pred.price_ceiling} EGP",
+              help="السعر اللي عنده المقاطعة بتوصل 50%")
+    c7.metric("Revenue Loss Est.", f"{c_pred.revenue_loss_estimate}%",
+              help="نسبة الإيراد المتوقع فقدانه بسبب المقاطعة")
 
     # ── 3 simple charts for factory owners ──
     sdf2 = pd.DataFrame(c_pred.segments_detail)
@@ -1173,7 +1228,7 @@ with tab3:
         "Bracket","Pop %","Disposable/mo (EGP)",
         "Burden %","Threshold %","At Risk","ML Prob",
     ]
-    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🟢 Yes" if x else "🔴 No")
+    sdf2_show["At Risk"]             = sdf2_show["At Risk"].apply(lambda x: "🔴 Yes" if x else "🟢 No")
     sdf2_show["ML Prob"]             = sdf2_show["ML Prob"].apply(lambda x: f"{x:.0%}")
     sdf2_show["Disposable/mo (EGP)"] = sdf2_show["Disposable/mo (EGP)"].round(0).astype(int)
     sdf2_show["Pop %"]               = sdf2_show["Pop %"].round(2)
