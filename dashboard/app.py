@@ -104,6 +104,60 @@ html, body,
 /* ═══════════════════════════════════════
    TOPBAR
 ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   AURORA BACKGROUND (new — fixed layer behind
+   all content, zero impact on existing layout
+   since it's position:fixed with pointer-events:none)
+═══════════════════════════════════════ */
+.q-aurora {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+.q-aurora::before, .q-aurora::after {
+  content: ''; position: absolute; border-radius: 50%;
+  filter: blur(90px); opacity: 0.28;
+  animation: aurora-drift 22s ease-in-out infinite;
+}
+.q-aurora::before {
+  width: 640px; height: 640px; top: -220px; left: -160px;
+  background: radial-gradient(circle, var(--iris) 0%, transparent 70%);
+}
+.q-aurora::after {
+  width: 560px; height: 560px; bottom: -220px; right: -140px;
+  background: radial-gradient(circle, #22D3EE 0%, transparent 70%);
+  animation-delay: -11s;
+}
+@keyframes aurora-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(60px, 40px) scale(1.12); }
+  66%      { transform: translate(-40px, 70px) scale(0.94); }
+}
+[data-testid="stAppViewContainer"] > .main > .block-container > div { position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════
+   GLASSMORPHISM LAYER (new — upgrades existing
+   card classes with backdrop-blur + gradient
+   border glow. Same class names, richer look.)
+═══════════════════════════════════════ */
+.q-nav, .q-kpi, .q-callout, .q-rec, .q-status-strip,
+.q-dscore-card, .q-hero-logo-block {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.q-kpi, .q-rec, .q-dscore-card {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+}
+.q-kpi::after, .q-rec::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  padding: 1px; pointer-events: none;
+  background: linear-gradient(135deg, rgba(147,51,234,0.5), rgba(34,211,238,0.15), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity 0.3s var(--ease);
+}
+.q-kpi:hover::after, .q-rec:hover::after { opacity: 1; }
+
 .q-nav {
   position: sticky; top: 0; z-index: 999;
   height: 64px;
@@ -123,6 +177,11 @@ html, body,
   font-size: 19px;
   box-shadow: 0 0 22px var(--iris-glow);
   flex-shrink: 0;
+  animation: q-logo-breathe 3.2s ease-in-out infinite;
+}
+@keyframes q-logo-breathe {
+  0%, 100% { box-shadow: 0 0 22px var(--iris-glow); }
+  50%      { box-shadow: 0 0 34px var(--iris-glow), 0 0 14px rgba(34,211,238,0.35); }
 }
 .q-nav-name {
   font-family: 'Space Grotesk', sans-serif;
@@ -229,8 +288,14 @@ html, body,
   margin-bottom: 18px; max-width: 700px; position: relative;
 }
 .q-hero-h1-accent {
-  background: linear-gradient(135deg,var(--iris-2) 0%,#B794F6 50%,var(--jade) 100%);
+  background: linear-gradient(135deg,var(--iris-2) 0%,#22D3EE 45%,var(--jade) 100%);
+  background-size: 200% 200%;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: q-gradient-shift 6s ease-in-out infinite;
+}
+@keyframes q-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
 }
 .q-hero-sub {
   font-size: 17px; color: var(--mist); line-height: 1.72;
@@ -311,20 +376,23 @@ html, body,
    TABS
 ═══════════════════════════════════════ */
 .stTabs [data-baseweb="tab-list"] {
-  background: var(--surface) !important; border-radius: var(--r-md) !important;
-  padding: 5px !important; gap: 3px !important; border: 1px solid var(--border) !important;
-  width: fit-content !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)) !important;
+  backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: var(--r-md) !important;
+  padding: 5px !important; gap: 3px !important; border: 1px solid var(--border-2) !important;
+  width: fit-content !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 24px rgba(0,0,0,0.25) !important;
 }
 .stTabs [data-baseweb="tab"] {
   border-radius: 10px !important; font-family: 'Inter',sans-serif !important;
   font-size: 13px !important; font-weight: 600 !important; color: var(--dim) !important;
   padding: 9px 20px !important; background: transparent !important; border: none !important;
-  transition: all 0.2s var(--ease) !important;
+  transition: all 0.25s var(--ease) !important;
 }
-.stTabs [data-baseweb="tab"]:hover { color: var(--mist) !important; background: var(--raised) !important; }
+.stTabs [data-baseweb="tab"]:hover { color: var(--mist) !important; background: rgba(255,255,255,0.05) !important; }
 .stTabs [aria-selected="true"] {
   background: linear-gradient(135deg,var(--iris),var(--iris-2)) !important;
-  color: #fff !important; box-shadow: 0 4px 16px var(--iris-glow) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 20px var(--iris-glow), 0 0 0 1px rgba(34,211,238,0.3) !important;
 }
 .stTabs [data-baseweb="tab-border"],
 .stTabs [data-baseweb="tab-highlight"] { display: none !important; }
@@ -348,11 +416,17 @@ html, body,
    (no color on * selector, no iframe touch)
 ═══════════════════════════════════════ */
 [data-testid="stMetric"] {
-  background: var(--surface) !important; border: 1px solid var(--border) !important;
+  background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01)) !important;
+  backdrop-filter: blur(14px) !important; -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--border) !important;
   border-radius: var(--r-lg) !important; padding: 20px 22px !important;
-  transition: transform .2s var(--ease), box-shadow .2s var(--ease) !important;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease) !important;
 }
-[data-testid="stMetric"]:hover { transform: translateY(-3px) !important; box-shadow: 0 16px 44px rgba(0,0,0,0.3) !important; }
+[data-testid="stMetric"]:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.35), 0 0 0 1px rgba(147,51,234,0.3) !important;
+  border-color: rgba(147,51,234,0.35) !important;
+}
 [data-testid="stMetricLabel"] p {
   font-family: 'Inter',sans-serif !important; font-size: 10px !important;
   font-weight: 700 !important; color: var(--dim) !important;
@@ -381,11 +455,20 @@ html, body,
   font-weight: 700 !important; padding: 13px 28px !important;
   box-shadow: 0 4px 18px var(--iris-glow) !important;
   transition: all 0.2s var(--ease) !important;
+  position: relative !important; overflow: hidden !important;
 }
+.stButton > button::before {
+  content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg); transition: left 0.6s var(--ease);
+}
+.stButton > button:hover::before { left: 130%; }
 .stButton > button:hover {
-  transform: translateY(-2px) !important; box-shadow: 0 8px 28px var(--iris-glow) !important;
-  filter: brightness(1.08) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 34px var(--iris-glow), 0 0 0 1px rgba(34,211,238,0.25) !important;
+  filter: brightness(1.1) !important;
 }
+.stButton > button:active { transform: translateY(0) scale(0.98) !important; }
 
 /* ── Form labels ── */
 .stRadio > label, div[role="radiogroup"] label {
@@ -410,9 +493,15 @@ html, body,
   color: var(--snow) !important; font-family: 'Space Grotesk',sans-serif !important;
   font-size: 15px !important; font-weight: 500 !important; border-radius: 8px !important;
 }
-.stSpinner > div { border-top-color: var(--iris) !important; }
+.stSpinner > div {
+  border-top-color: var(--iris) !important;
+  filter: drop-shadow(0 0 8px var(--iris-glow));
+}
 .stSpinner p { font-family: 'Inter',sans-serif !important; color: var(--mist) !important; }
-.stMarkdown h3 { font-family: 'Space Grotesk',sans-serif !important; color: var(--snow) !important; }
+.stMarkdown h3 {
+  font-family: 'Space Grotesk',sans-serif !important; color: var(--snow) !important;
+  letter-spacing: -0.3px !important;
+}
 
 /* ── Vertical block bg ── */
 [data-testid="stVerticalBlock"] { background: var(--void) !important; }
@@ -714,23 +803,23 @@ hr { border-color: var(--border) !important; margin: 24px 0 !important; }
 CHART = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Inter", color="#8B9AB3"),
+    font=dict(family="Inter", color="#A6B3D1"),
     xaxis=dict(
-        gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
-        zeroline=False, tickfont=dict(family="Inter", size=11, color="#4A5568"),
+        gridcolor="rgba(255,255,255,0.05)", linecolor="rgba(255,255,255,0.09)",
+        zeroline=False, tickfont=dict(family="Inter", size=11, color="#626C89"),
     ),
     yaxis=dict(
-        gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.07)",
-        zeroline=False, tickfont=dict(family="Inter", size=11, color="#4A5568"),
+        gridcolor="rgba(255,255,255,0.05)", linecolor="rgba(255,255,255,0.09)",
+        zeroline=False, tickfont=dict(family="Inter", size=11, color="#626C89"),
     ),
     margin=dict(t=24, b=20, l=8, r=8),
     hoverlabel=dict(
-        bgcolor="rgba(22,27,39,0.96)", bordercolor="rgba(124,58,237,0.4)",
-        font=dict(family="Inter", size=12, color="#F8FAFC"),
+        bgcolor="rgba(16,20,31,0.97)", bordercolor="rgba(147,51,234,0.5)",
+        font=dict(family="Inter", size=12, color="#FAFBFF"),
     ),
     legend=dict(
-        bgcolor="rgba(13,17,23,0.88)", bordercolor="rgba(255,255,255,0.08)",
-        borderwidth=1, font=dict(family="Inter", size=12, color="#8B9AB3"),
+        bgcolor="rgba(16,20,31,0.9)", bordercolor="rgba(255,255,255,0.1)",
+        borderwidth=1, font=dict(family="Inter", size=12, color="#A6B3D1"),
     ),
 )
 
@@ -742,6 +831,8 @@ def chart(**overrides):
 # ─────────────────────────────────────────────────────────
 # TOPBAR
 # ─────────────────────────────────────────────────────────
+st.markdown('<div class="q-aurora"></div>', unsafe_allow_html=True)
+
 st.markdown("""
 <div class="q-nav">
   <div class="q-nav-logo">
